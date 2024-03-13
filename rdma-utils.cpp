@@ -26,6 +26,8 @@ void RDMAServer::start() {
         this->handleCq();
     });
 
+    std::cout << "等待连接建立" << std::endl;
+
     while (CONNECTED == false){}
     std::cout << "连接建立" << std::endl;
 
