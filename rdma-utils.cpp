@@ -329,14 +329,14 @@ void RDMAServer::bindaddr() {
 void RDMAServer::rdma_buffer_init() {
     int ret;
 
-    this->recv_mr = ibv_reg_mr(this->pd, this->recv_buf, sizeof(struct rdma_info),
+    this->recv_mr = ibv_reg_mr(this->pd, &this->recv_buf, sizeof(struct rdma_info),
             IBV_ACCESS_LOCAL_WRITE);
     if (!this->recv_buf){
         std::cerr << "ibv_reg_mr error" << std::endl;
         exit(1);
     }
 
-    this->send_mr = ibv_reg_mr(this->pd, this->send_buf, sizeof(struct rdma_info), 0);
+    this->send_mr = ibv_reg_mr(this->pd, &this->send_buf, sizeof(struct rdma_info), 0);
     if (!this->send_mr){
         std::cerr << "ibv_reg_mr error" << std::endl;
         exit(1);
@@ -443,14 +443,14 @@ void RDMAclient::bindaddr() {
 void RDMAclient::rdma_buffer_init() {
     int ret;
 
-    this->recv_mr = ibv_reg_mr(this->pd, this->recv_buf, sizeof(struct rdma_info),
+    this->recv_mr = ibv_reg_mr(this->pd, &this->recv_buf, sizeof(struct rdma_info),
                                IBV_ACCESS_LOCAL_WRITE);
     if (!this->recv_buf){
         std::cerr << "ibv_reg_mr error" << std::endl;
         exit(1);
     }
 
-    this->send_mr = ibv_reg_mr(this->pd, this->send_buf, sizeof(struct rdma_info), 0);
+    this->send_mr = ibv_reg_mr(this->pd, &this->send_buf, sizeof(struct rdma_info), 0);
     if (!this->send_mr){
         std::cerr << "ibv_reg_mr error" << std::endl;
         exit(1);
