@@ -1,6 +1,7 @@
 #include <iostream>
 #include "./include/rdma-utils.h"
 #include <thread>
+#include <string.h>
 
 
 
@@ -11,7 +12,7 @@ int main() {
     char *start_buf = new char [32];
     char *rdma_buf = new char [32];
 
-    std::strcpy(start_buf, "hello world form client");
+    strcpy(start_buf, "hello world form client");
 
 
     RDMAServer client("10.0.0.2", 12345,
