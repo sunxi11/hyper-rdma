@@ -33,7 +33,7 @@ void RDMAServer::start() {
 
 void RDMAServer::handleCq(){
     struct ibv_cq *ev_cq;
-    struct ibv_wc *wc;
+    struct ibv_wc *wc = new struct ibv_wc;
     int ret;
     int cq_num;
     void *ev_ctx;
@@ -87,7 +87,7 @@ void RDMAServer::handleCq(){
                     server_message_type = SERVER_READ_COMPLETE;
                     break;
                 case IBV_WC_RECV_RDMA_WITH_IMM:
-                    server_message_type = be32toh(wc->imm_data);
+                    server_message_type = static_cast<MESSAGE_TYPE>(be32toh(wc->imm_data));
                     remote_addr = be32toh(recv_buf.buf);
                     remote_rkey = be32toh(recv_buf.rkey);
                     remote_len = be32toh(recv_buf.size);
@@ -617,7 +617,7 @@ void RDMAclient::handleCmConnections() {
 
 void RDMAclient::handleCq() {
     struct ibv_cq *ev_cq;
-    struct ibv_wc *wc;
+    struct ibv_wc *wc = new struct ibv_wc;
     int ret;
     int cq_num;
     void *ev_ctx;
@@ -670,7 +670,7 @@ void RDMAclient::handleCq() {
                     server_message_type = CLIENT_READ_COMPLETE;
                     break;
                 case IBV_WC_RECV_RDMA_WITH_IMM:
-                    server_message_type = be32toh(wc->imm_data);
+                    server_message_type = static_cast<MESSAGE_TYPE>(be32toh(wc->imm_data));
                     remote_addr = be32toh(recv_buf.buf);
                     remote_rkey = be32toh(recv_buf.rkey);
                     remote_len = be32toh(recv_buf.size);
