@@ -16,8 +16,8 @@ link_directories(${RDMA_CORE_LIBRARY_DIR})
 
 include_directories("./include")
 
-add_executable(hyper_rdma_server main_client.cpp rdma-utils.cpp)
-target_link_libraries(hyper_rdma rdmacm ibverbs rdmacm_tools pthread)
+add_executable(hyper_rdma_client main_client.cpp rdma-utils.cpp)
+target_link_libraries(hyper_rdma_client rdmacm ibverbs rdmacm_tools pthread)
 
 add_executable(hyper_rdma_server main_server.cpp rdma-utils.cpp)
 target_link_libraries(hyper_rdma rdmacm ibverbs rdmacm_tools pthread)
