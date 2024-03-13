@@ -331,7 +331,7 @@ void RDMAServer::rdma_buffer_init() {
 
     this->recv_mr = ibv_reg_mr(this->pd, &this->recv_buf, sizeof(struct rdma_info),
             IBV_ACCESS_LOCAL_WRITE);
-    if (!this->recv_buf){
+    if (!this->recv_mr){
         std::cerr << "ibv_reg_mr error" << std::endl;
         exit(1);
     }
@@ -445,7 +445,7 @@ void RDMAclient::rdma_buffer_init() {
 
     this->recv_mr = ibv_reg_mr(this->pd, &this->recv_buf, sizeof(struct rdma_info),
                                IBV_ACCESS_LOCAL_WRITE);
-    if (!this->recv_buf){
+    if (!this->recv_mr){
         std::cerr << "ibv_reg_mr error" << std::endl;
         exit(1);
     }
@@ -663,11 +663,11 @@ void RDMAclient::handleCq() {
                     break;
                 case IBV_WC_RDMA_WRITE:
                     std::cout << "rdma write complete!" << std::endl;
-                    server_message_type = CLIENT_SEND_ADDRINFO;
+                    server_message_type = CLIENT_WRITE_COMPLETE;
                     break;
                 case IBV_WC_RDMA_READ:
                     std::cout << "rdma read/write complete!" << std::endl;
-                    server_message_type = ;
+                    server_message_type = CLIENT_READ_COMPLETE;
                     break;
                 case IBV_WC_RECV_RDMA_WITH_IMM:
                     server_message_type = be32toh(wc->imm_data);
