@@ -13,7 +13,8 @@ int main() {
     char *rdma_buf = new char [32];
     char *start_buf = new char [32];
 
-    std::strcpy(start_buf, "hello world form server");
+    strcpy(start_buf, "hello world form server");
+
 
 
     RDMAServer server("10.0.0.2", 12345,
