@@ -244,13 +244,15 @@ void RDMAServer::init() {
         exit(1);
     }
 
-    ret = ibv_req_notify_cq(this->cq, 0);
+    ret = ibv_req_notify_cq(cq, 0);
     if (ret) {
         std::cerr << "ibv_req_notify_cq error" << std::endl;
         exit(1);
     }
 
-    ret = rdma_create_qp(child_cm_id, this->pd, &init_attr);
+
+    qp = new struct ibv_qp;
+    ret = rdma_create_qp(child_cm_id, pd, &init_attr);
     if (ret) {
         std::cerr << "rdma_create_qp error" << std::endl;
         exit(1);
@@ -325,7 +327,8 @@ void RDMAServer::bindaddr() {
             exit(1);
         }
         if (event->event == RDMA_CM_EVENT_CONNECT_REQUEST) {
-            child_cm_id = cm_id;
+//            child_cm_id = cm_id;
+            memcpy(&child_cm_id, &cm_id, sizeof(struct rdma_cm_id));
             break;
         }
     }
