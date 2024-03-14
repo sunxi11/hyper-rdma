@@ -6,8 +6,8 @@
 #define HYPER_RDMA_RDMA_UTILS_H
 
 #include <iostream>
-#include "rdma_cma.h"
-#include "verbs.h"
+#include "include/rdma_cma.h"
+#include "include/verbs.h"
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <cstdint>

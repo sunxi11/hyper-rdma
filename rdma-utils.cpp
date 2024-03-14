@@ -1,9 +1,9 @@
 //
 // Created by SunX on 2024/3/12.
 //
-#include "./include/rdma-utils.h"
-#include "./include/verbs.h"
-#include "./include/rdma_cma.h"
+#include "rdma-utils.h"
+#include <infiniband/verbs.h>
+#include <rdma/rdma_cma.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <cstdint>

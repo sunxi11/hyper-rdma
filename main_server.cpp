@@ -1,5 +1,5 @@
 #include <iostream>
-#include "./include/rdma-utils.h"
+#include "rdma-utils.h"
 #include <thread>
 #include <string.h>
 
