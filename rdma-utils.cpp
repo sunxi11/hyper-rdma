@@ -205,6 +205,7 @@ void RDMAServer::handleCmConnections() {
 void RDMAServer::init() {
     int ret;
     struct ibv_qp_init_attr init_attr = {};
+    memset(&init_attr, 0, sizeof(init_attr));
     init_attr.cap.max_send_wr = SQ_DEPTH;
     init_attr.cap.max_recv_wr = 2;
     init_attr.cap.max_recv_sge = 1;
@@ -218,7 +219,7 @@ void RDMAServer::init() {
         std::cerr << "rdma_create_event_channel error" << std::endl;
         exit(1);
     }
-    ret = rdma_create_id(this->cm_channel, &this->cm_id, this, RDMA_PS_TCP);
+    ret = rdma_create_id(cm_channel, &cm_id, this, RDMA_PS_TCP);
     if (ret) {
         std::cerr << "rdma_create_id error" << std::endl;
         exit(1);
@@ -250,8 +251,6 @@ void RDMAServer::init() {
         exit(1);
     }
 
-
-    qp = new struct ibv_qp;
     ret = rdma_create_qp(child_cm_id, pd, &init_attr);
     if (ret) {
         std::cerr << "rdma_create_qp error" << std::endl;
