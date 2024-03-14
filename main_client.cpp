@@ -15,11 +15,10 @@ int main() {
     strcpy(start_buf, "hello world form client");
 
 
-    RDMAclient client("10.0.0.2", 1345,
+    RDMAclient client("10.0.0.5", 7174,
                       start_buf, 32,
                       rdma_buf, 32);
 
-    client.init();
 
     std::thread clientThread([&client](){
         client.start();
