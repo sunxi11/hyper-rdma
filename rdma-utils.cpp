@@ -328,9 +328,9 @@ void RDMAServer::bindaddr() {
 
     std::cout << "等待连接" << std::endl;
 
+    auto event = new struct rdma_cm_event;
     //等待连接
     while(1){
-        auto *event = new struct rdma_cm_event;
         ret = rdma_get_cm_event(cm_channel, &event);
         if (ret) {
             std::cerr << "rdma_get_cm_event error: " << strerror(errno) << std::endl;
