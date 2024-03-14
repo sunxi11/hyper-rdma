@@ -237,6 +237,8 @@ void RDMAServer::init() {
         exit(1);
     }
 
+    std::cout << "pd 创建完成" << std::endl;
+
     channel = new struct ibv_comp_channel;
     channel = ibv_create_comp_channel(child_cm_id->verbs);
     if (!channel) {
@@ -244,12 +246,16 @@ void RDMAServer::init() {
         exit(1);
     }
 
+    std::cout << "channel 创建完成" << std::endl;
+
     cq = new struct ibv_cq;
     cq = ibv_create_cq(child_cm_id->verbs, SQ_DEPTH * 2, NULL, this->channel, 0);
     if (!cq) {
         std::cerr << "ibv_create_cq error" << std::endl;
         exit(1);
     }
+
+    std::cout << "cq 创建完成" << std::endl;
 
     ret = ibv_req_notify_cq(cq, 0);
     if (ret) {
