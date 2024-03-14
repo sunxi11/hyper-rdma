@@ -203,6 +203,9 @@ void RDMAServer::handleCmConnections() {
 }
 //先调用这个函数
 void RDMAServer::init() {
+
+    std::cout << "11111111" << std::endl;
+
     int ret;
     struct ibv_qp_init_attr init_attr = {};
     memset(&init_attr, 0, sizeof(init_attr));
