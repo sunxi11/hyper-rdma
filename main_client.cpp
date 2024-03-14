@@ -19,6 +19,8 @@ int main() {
                       start_buf, 32,
                       rdma_buf, 32);
 
+    client.init();
+
     std::thread clientThread([&client](){
         client.start();
     });
