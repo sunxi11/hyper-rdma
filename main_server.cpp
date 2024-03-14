@@ -17,7 +17,7 @@ int main() {
 
 
 
-    RDMAServer server("10.0.0.2", 12345,
+    RDMAServer server("10.0.0.2", 1345,
                       start_buf, 32,
                       rdma_buf, 32);
 

@@ -15,7 +15,7 @@ int main() {
     strcpy(start_buf, "hello world form client");
 
 
-    RDMAclient client("10.0.0.2", 12345,
+    RDMAclient client("10.0.0.2", 1345,
                       start_buf, 32,
                       rdma_buf, 32);
 
