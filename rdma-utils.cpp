@@ -338,6 +338,11 @@ void RDMAServer::bindaddr() {
         }
         if (event->event == RDMA_CM_EVENT_CONNECT_REQUEST) {
             child_cm_id = event->id;
+            ret = rdma_ack_cm_event(event);
+            if (ret) {
+                std::cerr << "rdma_ack_cm_event error: " << strerror(errno) << std::endl;
+                exit(1);
+            }
             break;
         }
         ret = rdma_ack_cm_event(event);
