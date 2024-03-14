@@ -63,6 +63,7 @@ void RDMAServer::handleCq(){
     struct ibv_recv_wr *bad_wr;
 
     while (1){
+        std::cout << "111" << std::endl;
         ret = ibv_get_cq_event(this->channel, &ev_cq, &ev_ctx);
         if (ret){
             std::cerr << "failed to get cq event" << strerror(errno) << std::endl;
