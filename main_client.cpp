@@ -15,28 +15,20 @@ int main() {
     strcpy(start_buf, "hello world form client");
 
 
-    RDMAclient client("10.0.0.5", 7174,
+    auto *client = new RDMAclient("10.0.0.5", 1245,
                       start_buf, 32,
                       rdma_buf, 32);
 
 
-    std::thread clientThread([&client](){
-        client.start();
+    std::thread clientThread([client](){
+        client->start();
     });
 
 
     //rdma 操作之前
     clientThread.join();
-    client.rdma_write();
-    client.rdma_read();
-
-
-
-
-
-
-
-
+    client->rdma_write();
+    client->rdma_read();
 
 
     std::cout << "Hello, World!" << std::endl;

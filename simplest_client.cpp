@@ -161,11 +161,7 @@ void simple_client::start() {
         std::cerr << "error" << strerror(errno) << std::endl;
         exit(1);
     }
-
-
     std::cout << "1111111" << std::endl;
-
-
 }
 
 
