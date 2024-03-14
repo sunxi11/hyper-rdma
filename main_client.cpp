@@ -40,15 +40,17 @@ int main() {
                       rdma_buf, 32);
 
 
-    std::thread clientThread([client](){
-        client->start();
-    });
+//    std::thread clientThread([client](){
+//        client->start();
+//    });
+
+    client->start();
 
 
 
 
     //rdma 操作之前
-    clientThread.join();
+//    clientThread.join();
     client->send_first_infomation();
 //    client->rdma_write();
 //    client->rdma_read();

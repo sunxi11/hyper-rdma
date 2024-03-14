@@ -24,10 +24,12 @@ int main() {
                       start_buf, 32,
                       rdma_buf, 32);
 
-    std::thread serverThread([server](){
-        server->start();
-    });
-    serverThread.join();
+//    std::thread serverThread([server](){
+//        server->start();
+//    });
+
+    server->start()
+//    serverThread.join();
 
 
 
