@@ -276,6 +276,7 @@ void RDMAServer::init() {
 void RDMAServer::bindaddr() {
     struct addrinfo *res;
     int ret;
+    this->sin = (struct sockaddr_storage *)malloc(sizeof(struct sockaddr_storage));
     ret = getaddrinfo(this->ip, NULL, NULL, &res);
     if (ret) {
         std::cerr << "getaddrinfo error: " << gai_strerror(ret) << std::endl;
@@ -394,6 +395,7 @@ void RDMAServer::rdma_buffer_init() {
 void RDMAclient::bindaddr() {
     struct addrinfo *res;
     int ret;
+    this->sin = (struct sockaddr_storage *)malloc(sizeof(struct sockaddr_storage));
     ret = getaddrinfo(this->ip, NULL, NULL, &res);
     if (ret) {
         std::cerr << "getaddrinfo error: " << gai_strerror(ret) << std::endl;
