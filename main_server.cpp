@@ -17,17 +17,20 @@ int main() {
 
 
 
-    RDMAServer server("10.0.0.2", 1345,
+
+
+
+    auto *server = new RDMAServer("10.0.0.5", 1245,
                       start_buf, 32,
                       rdma_buf, 32);
 
-    std::thread serverThread([&server](){
-        server.start();
+    std::thread serverThread([server](){
+        server->start();
     });
     serverThread.join();
 
-    server.rdma_write();
-    server.rdma_read();
+    server->rdma_write();
+    server->rdma_read();
 
 
     std::cout << "Hello, World!" << std::endl;
