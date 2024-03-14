@@ -211,8 +211,8 @@ void RDMAServer::init() {
     init_attr.cap.max_recv_sge = 1;
     init_attr.cap.max_send_sge = 1;
     init_attr.qp_type = IBV_QPT_RC;
-    init_attr.send_cq = this->cq;
-    init_attr.recv_cq = this->cq;
+    init_attr.send_cq = cq;
+    init_attr.recv_cq = cq;
 
     cm_channel = new struct rdma_event_channel;
     cm_channel = rdma_create_event_channel();
@@ -231,18 +231,21 @@ void RDMAServer::init() {
 
     RDMAServer::bindaddr(); //调用liston并阻塞，直到有连接请求
 
+    pd = new struct ibv_pd;
     pd = ibv_alloc_pd(child_cm_id->verbs);
     if (!pd) {
         std::cerr << "ibv_alloc_pd error" << std::endl;
         exit(1);
     }
 
+    channel = new struct ibv_comp_channel;
     channel = ibv_create_comp_channel(child_cm_id->verbs);
     if (!channel) {
         std::cerr << "ibv_create_comp_channel error" << std::endl;
         exit(1);
     }
 
+    cq = new struct ibv_cq;
     cq = ibv_create_cq(child_cm_id->verbs, SQ_DEPTH * 2, NULL, this->channel, 0);
     if (!cq) {
         std::cerr << "ibv_create_cq error" << std::endl;
@@ -255,6 +258,9 @@ void RDMAServer::init() {
         exit(1);
     }
 
+    std::cout << "开始创建qp" << std::endl;
+
+    qp = new struct ibv_qp;
     ret = rdma_create_qp(child_cm_id, pd, &init_attr);
     if (ret) {
         std::cerr << "rdma_create_qp error" << std::endl;
