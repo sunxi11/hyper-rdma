@@ -221,7 +221,6 @@ void RDMAServer::init() {
         exit(1);
     }
 
-    cm_id = new struct rdma_cm_id;
     child_cm_id = new struct rdma_cm_id;
     ret = rdma_create_id(cm_channel, &cm_id, this, RDMA_PS_TCP);
     if (ret) {
@@ -337,7 +336,8 @@ void RDMAServer::bindaddr() {
         }
         if (event->event == RDMA_CM_EVENT_CONNECT_REQUEST) {
 //            child_cm_id = cm_id;
-            memcpy(&child_cm_id, &cm_id, sizeof(struct rdma_cm_id));
+            child_cm_id = event->id;
+//            memcpy(&child_cm_id, &cm_id, sizeof(struct rdma_cm_id));
             break;
         }
     }
