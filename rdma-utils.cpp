@@ -213,7 +213,7 @@ void RDMAServer::init() {
     init_attr.send_cq = this->cq;
     init_attr.recv_cq = this->cq;
 
-    this->cm_channel = rdma_create_event_channel();
+    cm_channel = rdma_create_event_channel();
     if (!this->cm_channel) {
         std::cerr << "rdma_create_event_channel error" << std::endl;
         exit(1);
@@ -226,20 +226,20 @@ void RDMAServer::init() {
 
     RDMAServer::bindaddr(); //调用liston并阻塞，直到有连接请求
 
-    this->pd = ibv_alloc_pd(this->cm_id->verbs);
-    if (!this->pd) {
+    pd = ibv_alloc_pd(child_cm_id->verbs);
+    if (!pd) {
         std::cerr << "ibv_alloc_pd error" << std::endl;
         exit(1);
     }
 
-    this->channel = ibv_create_comp_channel(this->cm_id->verbs);
-    if (!this->channel) {
+    channel = ibv_create_comp_channel(child_cm_id->verbs);
+    if (!channel) {
         std::cerr << "ibv_create_comp_channel error" << std::endl;
         exit(1);
     }
 
-    this->cq = ibv_create_cq(this->cm_id->verbs, SQ_DEPTH * 2, NULL, this->channel, 0);
-    if (!this->cq) {
+    cq = ibv_create_cq(child_cm_id->verbs, SQ_DEPTH * 2, NULL, this->channel, 0);
+    if (!cq) {
         std::cerr << "ibv_create_cq error" << std::endl;
         exit(1);
     }
@@ -250,12 +250,12 @@ void RDMAServer::init() {
         exit(1);
     }
 
-    ret = rdma_create_qp(this->cm_id, this->pd, &init_attr);
+    ret = rdma_create_qp(child_cm_id, this->pd, &init_attr);
     if (ret) {
         std::cerr << "rdma_create_qp error" << std::endl;
         exit(1);
     }
-    this->qp = this->cm_id->qp;
+    qp = child_cm_id->qp;
 
     RDMAServer::rdma_buffer_init();
 
@@ -325,7 +325,7 @@ void RDMAServer::bindaddr() {
             exit(1);
         }
         if (event->event == RDMA_CM_EVENT_CONNECT_REQUEST) {
-            this->child_cm_id = this->cm_id;
+            child_cm_id = cm_id;
             break;
         }
     }
