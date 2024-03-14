@@ -535,18 +535,21 @@ void RDMAclient::init() {
 
     RDMAclient::bindaddr(); //
 
+    this->pd = new struct ibv_pd;
     this->pd = ibv_alloc_pd(this->cm_id->verbs);
     if (!this->pd) {
         std::cerr << "ibv_alloc_pd error" << std::endl;
         exit(1);
     }
 
+    this->channel = new struct ibv_comp_channel;
     this->channel = ibv_create_comp_channel(this->cm_id->verbs);
     if (!this->channel) {
         std::cerr << "ibv_create_comp_channel error" << std::endl;
         exit(1);
     }
 
+    this->cq = new struct ibv_cq;
     this->cq = ibv_create_cq(this->cm_id->verbs, SQ_DEPTH * 2, NULL, this->channel, 0);
     if (!this->cq) {
         std::cerr << "ibv_create_cq error" << std::endl;
@@ -559,6 +562,7 @@ void RDMAclient::init() {
         exit(1);
     }
 
+    this->qp = new struct ibv_qp;
     ret = rdma_create_qp(this->cm_id, this->pd, &init_attr);
     if (ret) {
         std::cerr << "rdma_create_qp error" << std::endl;
