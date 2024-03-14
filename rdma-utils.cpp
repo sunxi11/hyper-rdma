@@ -31,12 +31,13 @@ void RDMAServer::start() {
         exit(1);
     }
 
+    RDMAServer::init();
+
     //初始化完成后等待连接的建立
     std::thread connThread([this](){
         this->handleCmConnections();
     });
     connThread.detach(); //detach 后的线程与创建它的线程生命周期脱钩，成为了一个完全独立的执行流
-    RDMAServer::init();
     //创建一个线程处理cq
     std::thread cqThread([this](){
         this->handleCq();
