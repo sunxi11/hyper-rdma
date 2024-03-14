@@ -34,7 +34,7 @@ class RDMAServer {
 public:
     RDMAServer(const char *ip, int port, void *start_buf, int start_size, void *rdma_buf, int rdma_size){
         this->ip = ip;
-        this->port = port;
+        this->port = htobe16(port);
         this->start_buf = (char *)start_buf;
         this->start_size = start_size;
         this->rdma_buf = (char *)rdma_buf;
@@ -47,7 +47,7 @@ public:
 
 private:
     const char *ip;
-    int port;
+    __be16 port;
     struct sockaddr_storage *sin;
 
     struct ibv_comp_channel *channel;
@@ -101,7 +101,7 @@ class RDMAclient{
     public:
     RDMAclient(const char *ip, int port, void *start_buf, int start_size, void *rdma_buf, int rdma_size){
         this->ip = ip;
-        this->port = port;
+        this->port = htobe16(port);
         this->start_buf = (char *)start_buf;
         this->start_size = start_size;
         this->rdma_buf = (char *)rdma_buf;
@@ -114,7 +114,7 @@ class RDMAclient{
     void rdma_write();
 private :
     const char *ip;
-    int port;
+    __be16 port;
     struct sockaddr_storage *sin;
 
     struct ibv_comp_channel *channel;
