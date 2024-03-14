@@ -514,6 +514,7 @@ void RDMAclient::rdma_buffer_init() {
 void RDMAclient::init() {
     int ret;
     struct ibv_qp_init_attr init_attr = {};
+    memset(&init_attr, 0, sizeof(init_attr));
     init_attr.cap.max_send_wr = SQ_DEPTH;
     init_attr.cap.max_recv_wr = 2;
     init_attr.cap.max_recv_sge = 1;
