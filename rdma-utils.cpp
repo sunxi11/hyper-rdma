@@ -14,13 +14,29 @@
 
 
 void RDMAServer::start() {
-    RDMAServer::init();
+
+    int ret;
+
+    cm_channel = new struct rdma_event_channel;
+    cm_channel = rdma_create_event_channel();
+    if (!this->cm_channel) {
+        std::cerr << "rdma_create_event_channel error" << std::endl;
+        exit(1);
+    }
+
+    child_cm_id = new struct rdma_cm_id;
+    ret = rdma_create_id(cm_channel, &cm_id, this, RDMA_PS_TCP);
+    if (ret) {
+        std::cerr << "rdma_create_id error" << std::endl;
+        exit(1);
+    }
+
     //初始化完成后等待连接的建立
     std::thread connThread([this](){
         this->handleCmConnections();
     });
     connThread.detach(); //detach 后的线程与创建它的线程生命周期脱钩，成为了一个完全独立的执行流
-
+    RDMAServer::init();
     //创建一个线程处理cq
     std::thread cqThread([this](){
         this->handleCq();
@@ -216,20 +232,6 @@ void RDMAServer::init() {
     init_attr.qp_type = IBV_QPT_RC;
     init_attr.send_cq = cq;
     init_attr.recv_cq = cq;
-
-    cm_channel = new struct rdma_event_channel;
-    cm_channel = rdma_create_event_channel();
-    if (!this->cm_channel) {
-        std::cerr << "rdma_create_event_channel error" << std::endl;
-        exit(1);
-    }
-
-    child_cm_id = new struct rdma_cm_id;
-    ret = rdma_create_id(cm_channel, &cm_id, this, RDMA_PS_TCP);
-    if (ret) {
-        std::cerr << "rdma_create_id error" << std::endl;
-        exit(1);
-    }
 
     RDMAServer::bindaddr(); //调用liston并阻塞，直到有连接请求
 
@@ -544,17 +546,6 @@ void RDMAclient::init() {
     init_attr.send_cq = this->cq;
     init_attr.recv_cq = this->cq;
 
-    this->cm_channel = rdma_create_event_channel();
-    if (!this->cm_channel) {
-        std::cerr << "rdma_create_event_channel error" << std::endl;
-        exit(1);
-    }
-    ret = rdma_create_id(this->cm_channel, &this->cm_id, this, RDMA_PS_TCP);
-    if (ret) {
-        std::cerr << "rdma_create_id error" << std::endl;
-        exit(1);
-    }
-
     RDMAclient::bindaddr(); //
 
     this->pd = new struct ibv_pd;
@@ -728,12 +719,27 @@ void RDMAclient::handleCq() {
 }
 
 void RDMAclient::start() {
-    RDMAclient::init();
+
+    int ret;
+
+    this->cm_channel = rdma_create_event_channel();
+    if (!this->cm_channel) {
+        std::cerr << "rdma_create_event_channel error" << std::endl;
+        exit(1);
+    }
+    ret = rdma_create_id(this->cm_channel, &this->cm_id, this, RDMA_PS_TCP);
+    if (ret) {
+        std::cerr << "rdma_create_id error" << std::endl;
+        exit(1);
+    }
+
     //初始化完成后等待连接的建立
     std::thread connThread([this](){
         this->handleCmConnections();
     });
     connThread.detach(); //detach 后的线程与创建它的线程生命周期脱钩，成为了一个完全独立的执行流
+
+    RDMAclient::init();
 
     //创建一个线程处理cq
     std::thread cqThread([this](){
