@@ -29,8 +29,12 @@ int main() {
     });
     serverThread.join();
 
+
+
     server->rdma_write();
     server->rdma_read();
+
+    while (1){}
 
 
     std::cout << "Hello, World!" << std::endl;

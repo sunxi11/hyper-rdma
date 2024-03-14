@@ -112,6 +112,7 @@ class RDMAclient{
     void start();
     void rdma_read();
     void rdma_write();
+    void send_first_infomation();
 private :
     const char *ip;
     __be16 port;
