@@ -218,7 +218,7 @@ void RDMAServer::init() {
         std::cerr << "rdma_create_event_channel error" << std::endl;
         exit(1);
     }
-    ret = rdma_create_id(this->cm_channel, &this->cm_id, NULL, RDMA_PS_TCP);
+    ret = rdma_create_id(this->cm_channel, &this->cm_id, this, RDMA_PS_TCP);
     if (ret) {
         std::cerr << "rdma_create_id error" << std::endl;
         exit(1);
@@ -527,7 +527,7 @@ void RDMAclient::init() {
         std::cerr << "rdma_create_event_channel error" << std::endl;
         exit(1);
     }
-    ret = rdma_create_id(this->cm_channel, &this->cm_id, NULL, RDMA_PS_TCP);
+    ret = rdma_create_id(this->cm_channel, &this->cm_id, this, RDMA_PS_TCP);
     if (ret) {
         std::cerr << "rdma_create_id error" << std::endl;
         exit(1);
