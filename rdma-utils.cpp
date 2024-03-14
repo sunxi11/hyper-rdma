@@ -191,19 +191,19 @@ void RDMAServer::handleCmConnections() {
         switch (event->event) {
             case RDMA_CM_EVENT_ESTABLISHED:
                 //TODO 交换地址信息
-                send_buf.buf = htobe64((uint64_t)(unsigned long)this->start_buf);
-                send_buf.rkey = htobe32(this->start_mr->rkey);
-                send_buf.size = htobe32(this->start_size);
-                sq_wr.opcode = IBV_WR_SEND_WITH_IMM;
-                sq_wr.imm_data = htobe32(SERVER_SEND_ADDRINFO);
-
-                ret = ibv_post_send(this->qp, &this->sq_wr, NULL);
-                if (ret) {
-                    std::cerr << "ibv_post_send error: " << strerror(errno) << std::endl;
-                    exit(1);
-                }
-                //等待服务器接受到地址信息后发送自己的地址信息
-                while(server_message_type != CLIENT_SEND_ADDRINFO){}
+//                send_buf.buf = htobe64((uint64_t)(unsigned long)this->start_buf);
+//                send_buf.rkey = htobe32(this->start_mr->rkey);
+//                send_buf.size = htobe32(this->start_size);
+//                sq_wr.opcode = IBV_WR_SEND_WITH_IMM;
+//                sq_wr.imm_data = htobe32(SERVER_SEND_ADDRINFO);
+//
+//                ret = ibv_post_send(this->qp, &this->sq_wr, NULL);
+//                if (ret) {
+//                    std::cerr << "ibv_post_send error: " << strerror(errno) << std::endl;
+//                    exit(1);
+//                }
+//                //等待服务器接受到地址信息后发送自己的地址信息
+//                while(server_message_type != CLIENT_SEND_ADDRINFO){}
                 this->CONNECTED = true;
                 break;
             default:
@@ -615,19 +615,19 @@ void RDMAclient::handleCmConnections() {
         switch (event->event) {
             case RDMA_CM_EVENT_ESTABLISHED:
                 //等待服务器接受到地址信息后发送自己的地址信息
-                while(server_message_type != SERVER_SEND_ADDRINFO){}
-                //TODO 交换地址信息
-                send_buf.buf = htobe64((uint64_t)(unsigned long)this->start_buf);
-                send_buf.rkey = htobe32(this->start_mr->rkey);
-                send_buf.size = htobe32(this->start_size);
-                sq_wr.opcode = IBV_WR_SEND_WITH_IMM;
-                sq_wr.imm_data = htobe32(CLIENT_SEND_ADDRINFO);
-
-                ret = ibv_post_send(this->qp, &this->sq_wr, NULL);
-                if (ret) {
-                    std::cerr << "ibv_post_send error: " << strerror(errno) << std::endl;
-                    exit(1);
-                }
+//                while(server_message_type != SERVER_SEND_ADDRINFO){}
+//                //TODO 交换地址信息
+//                send_buf.buf = htobe64((uint64_t)(unsigned long)this->start_buf);
+//                send_buf.rkey = htobe32(this->start_mr->rkey);
+//                send_buf.size = htobe32(this->start_size);
+//                sq_wr.opcode = IBV_WR_SEND_WITH_IMM;
+//                sq_wr.imm_data = htobe32(CLIENT_SEND_ADDRINFO);
+//
+//                ret = ibv_post_send(this->qp, &this->sq_wr, NULL);
+//                if (ret) {
+//                    std::cerr << "ibv_post_send error: " << strerror(errno) << std::endl;
+//                    exit(1);
+//                }
                 this->CONNECTED = true;
                 break;
             default:
