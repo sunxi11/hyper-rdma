@@ -106,7 +106,7 @@ class RDMAclient{
         this->start_size = start_size;
         this->rdma_buf = (char *)rdma_buf;
         this->rdma_size = rdma_size;
-        this->sin = new sockaddr_storage;
+//        this->sin = new sockaddr_storage;
     }
     void init();
     void start();
