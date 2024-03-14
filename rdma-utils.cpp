@@ -395,12 +395,11 @@ void RDMAServer::rdma_buffer_init() {
 void RDMAclient::bindaddr() {
     struct addrinfo *res;
     int ret;
-//    this->sin = (struct sockaddr_storage *)malloc(sizeof(struct sockaddr_storage));
-//    if (!this->sin) { // 检查 malloc 返回值
-//        std::cerr << "Memory allocation failed for sockaddr_storage" << std::endl;
-//        exit(1);
-//    }
-
+    this->sin = (struct sockaddr_storage *)malloc(sizeof(struct sockaddr_storage));
+    if(!this->sin){
+        std::cerr << "malloc error" << std::endl;
+        exit(1);
+    }
     ret = getaddrinfo(this->ip, NULL, NULL, &res);
     if (ret) {
         std::cerr << "getaddrinfo error: " << gai_strerror(ret) << std::endl;
