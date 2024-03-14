@@ -214,11 +214,15 @@ void RDMAServer::init() {
     init_attr.send_cq = this->cq;
     init_attr.recv_cq = this->cq;
 
+    cm_channel = new struct rdma_event_channel;
     cm_channel = rdma_create_event_channel();
     if (!this->cm_channel) {
         std::cerr << "rdma_create_event_channel error" << std::endl;
         exit(1);
     }
+
+    cm_id = new struct rdma_cm_id;
+    child_cm_id = new struct rdma_cm_id;
     ret = rdma_create_id(cm_channel, &cm_id, this, RDMA_PS_TCP);
     if (ret) {
         std::cerr << "rdma_create_id error" << std::endl;
