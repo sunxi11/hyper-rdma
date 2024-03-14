@@ -28,7 +28,7 @@ int main() {
 //        server->start();
 //    });
 
-    server->start()
+    server->start();
 //    serverThread.join();
 
 
