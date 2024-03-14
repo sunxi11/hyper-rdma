@@ -42,6 +42,7 @@ void RDMAServer::start() {
     std::thread cqThread([this](){
         this->handleCq();
     });
+    cqThread.detach();
 
     std::cout << "等待连接建立" << std::endl;
 
@@ -746,6 +747,7 @@ void RDMAclient::start() {
     std::thread cqThread([this](){
         this->handleCq();
     });
+    cqThread.detach();
 
     while (CONNECTED == false){}
     std::cout << "连接建立" << std::endl;
