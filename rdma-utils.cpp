@@ -257,8 +257,6 @@ void RDMAServer::init() {
         exit(1);
     }
 
-    std::cout << "开始创建qp" << std::endl;
-
     qp = new struct ibv_qp;
     ret = rdma_create_qp(child_cm_id, pd, &init_attr);
     if (ret) {
