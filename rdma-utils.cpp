@@ -199,6 +199,10 @@ void RDMAServer::handleCmConnections() {
             exit(1);
         }
         switch (event->event) {
+            case RDMA_CM_EVENT_CONNECT_REQUEST:
+                child_cm_id = event->id;
+                GET_CONNECTED_REQ = true;
+                break;
             case RDMA_CM_EVENT_ESTABLISHED:
                 //TODO 交换地址信息
 //                send_buf.buf = htobe64((uint64_t)(unsigned long)this->start_buf);
@@ -329,30 +333,31 @@ void RDMAServer::bindaddr() {
 
 
     std::cout << "等待连接" << std::endl;
+    while(GET_CONNECTED_REQ == false){};
 
-    auto event = new struct rdma_cm_event;
-    //等待连接
-    while(1){
-        ret = rdma_get_cm_event(cm_channel, &event);
-        if (ret) {
-            std::cerr << "rdma_get_cm_event error: " << strerror(errno) << std::endl;
-            exit(1);
-        }
-        if (event->event == RDMA_CM_EVENT_CONNECT_REQUEST) {
-            child_cm_id = event->id;
-            ret = rdma_ack_cm_event(event);
-            if (ret) {
-                std::cerr << "rdma_ack_cm_event error: " << strerror(errno) << std::endl;
-                exit(1);
-            }
-            break;
-        }
-        ret = rdma_ack_cm_event(event);
-        if (ret) {
-            std::cerr << "rdma_ack_cm_event error: " << strerror(errno) << std::endl;
-            exit(1);
-        }
-    }
+//    auto event = new struct rdma_cm_event;
+//    //等待连接
+//    while(1){
+//        ret = rdma_get_cm_event(cm_channel, &event);
+//        if (ret) {
+//            std::cerr << "rdma_get_cm_event error: " << strerror(errno) << std::endl;
+//            exit(1);
+//        }
+//        if (event->event == RDMA_CM_EVENT_CONNECT_REQUEST) {
+//            child_cm_id = event->id;
+//            ret = rdma_ack_cm_event(event);
+//            if (ret) {
+//                std::cerr << "rdma_ack_cm_event error: " << strerror(errno) << std::endl;
+//                exit(1);
+//            }
+//            break;
+//        }
+//        ret = rdma_ack_cm_event(event);
+//        if (ret) {
+//            std::cerr << "rdma_ack_cm_event error: " << strerror(errno) << std::endl;
+//            exit(1);
+//        }
+//    }
 }
 
 void RDMAServer::rdma_buffer_init() {
@@ -447,31 +452,31 @@ void RDMAclient::bindaddr() {
         exit(1);
     }
 
-    while (1){
-        struct rdma_cm_event *event;
-        ret = rdma_get_cm_event(this->cm_channel, &event);
-        if (ret) {
-            std::cerr << "rdma_get_cm_event error: " << strerror(errno) << std::endl;
-            exit(1);
-        }
-        ret = rdma_ack_cm_event(event);
-        if (ret) {
-            std::cerr << "rdma_ack_cm_event error: " << strerror(errno) << std::endl;
-            exit(1);
-        }
-        if (event->event == RDMA_CM_EVENT_ADDR_RESOLVED) {
-            ret = rdma_resolve_route(this->cm_id, 2000);
-            if (ret){
-                std::cerr << "rdma_resolve_route error: " << strerror(errno) << std::endl;
-                exit(1);
-            }
-            continue;
-        }
-        if (event->event == RDMA_CM_EVENT_ROUTE_RESOLVED) {
-            break;
-        }
-
-    }
+//    while (1){
+//        struct rdma_cm_event *event;
+//        ret = rdma_get_cm_event(this->cm_channel, &event);
+//        if (ret) {
+//            std::cerr << "rdma_get_cm_event error: " << strerror(errno) << std::endl;
+//            exit(1);
+//        }
+//        ret = rdma_ack_cm_event(event);
+//        if (ret) {
+//            std::cerr << "rdma_ack_cm_event error: " << strerror(errno) << std::endl;
+//            exit(1);
+//        }
+//        if (event->event == RDMA_CM_EVENT_ADDR_RESOLVED) {
+//            ret = rdma_resolve_route(this->cm_id, 2000);
+//            if (ret){
+//                std::cerr << "rdma_resolve_route error: " << strerror(errno) << std::endl;
+//                exit(1);
+//            }
+//            continue;
+//        }
+//        if (event->event == RDMA_CM_EVENT_ROUTE_RESOLVED) {
+//            break;
+//        }
+//
+//    }
 }
 
 void RDMAclient::rdma_buffer_init() {
@@ -598,6 +603,23 @@ void RDMAclient::handleCmConnections() {
             exit(1);
         }
         switch (event->event) {
+            case RDMA_CM_EVENT_ADDR_RESOLVED:
+                ret = rdma_resolve_route(this->cm_id, 2000);
+                if (ret){
+                    std::cerr << "rdma_resolve_route error: " << strerror(errno) << std::endl;
+                    exit(1);
+                }
+                break;
+            case RDMA_CM_EVENT_ROUTE_RESOLVED:
+                ret = rdma_resolve_route(this->cm_id, 2000);
+                if (ret){
+                    std::cerr << "rdma_resolve_route error: " << strerror(errno) << std::endl;
+                    exit(1);
+                }
+                ROUTE_RESOLVED = true;
+                break;
+
+
             case RDMA_CM_EVENT_ESTABLISHED:
                 //等待服务器接受到地址信息后发送自己的地址信息
 //                while(server_message_type != SERVER_SEND_ADDRINFO){}
@@ -722,7 +744,7 @@ void RDMAclient::start() {
     std::thread connThread([this](){
         this->handleCmConnections();
     });
-    connThread.detach(); //detach 后的线程与创建它的线程生命周期脱钩，成为了一个完全独立的执行流
+    connThread.detach();
 
     RDMAclient::init();
 

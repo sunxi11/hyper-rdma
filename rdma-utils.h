@@ -88,6 +88,7 @@ private:
 
 
     bool CONNECTED = false;
+    bool GET_CONNECTED_REQ = false;
 
 
     void bindaddr();
@@ -156,6 +157,7 @@ private :
 
 
     bool CONNECTED = false;
+    bool ROUTE_RESOLVED = false;
 
 
     void bindaddr();
