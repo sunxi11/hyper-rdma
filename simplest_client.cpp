@@ -347,7 +347,7 @@ void simple_client::start() {
 
     cqthread.detach();
 
-    struct rdma_conn_param conn_param;
+    struct rdma_conn_param conn_param = {};
     conn_param.responder_resources = 1;
     conn_param.initiator_depth = 1;
     conn_param.retry_count = 7;
