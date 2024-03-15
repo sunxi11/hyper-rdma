@@ -649,14 +649,14 @@ void RDMAclient::handleCmConnections() {
 
 void RDMAclient::handleCq() {
     struct ibv_cq *ev_cq;
-    struct ibv_wc *wc = new struct ibv_wc;
+    struct ibv_wc *wc;
     int ret;
     int cq_num;
     void *ev_ctx;
     struct ibv_recv_wr *bad_wr;
 
     while (1){
-//        std::cout << "cq 线程建立开始监听 channel" << std::endl;
+        std::cout << "cq 线程建立开始监听 channel" << std::endl;
 //        ret = ibv_get_cq_event(this->channel, &ev_cq, &ev_ctx);
 //        if (ret){
 //            std::cerr << "failed to get cq event" << strerror(errno) << std::endl;
