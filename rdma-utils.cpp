@@ -656,22 +656,22 @@ void RDMAclient::handleCq() {
     struct ibv_recv_wr *bad_wr;
 
     while (1){
-        std::cout << "cq 线程建立开始监听 channel" << std::endl;
-        ret = ibv_get_cq_event(this->channel, &ev_cq, &ev_ctx);
-        if (ret){
-            std::cerr << "failed to get cq event" << strerror(errno) << std::endl;
-            exit(1);
-        }
-        if(ev_cq != this->cq){
-            std::cerr << "unknown cq" << std::endl;
-            exit(1);
-        }
-
-        ret = ibv_req_notify_cq(this->cq, 0);
-        if (ret){
-            std::cerr << "failed to request notify cq" << strerror(errno) << std::endl;
-            exit(1);
-        }
+//        std::cout << "cq 线程建立开始监听 channel" << std::endl;
+//        ret = ibv_get_cq_event(this->channel, &ev_cq, &ev_ctx);
+//        if (ret){
+//            std::cerr << "failed to get cq event" << strerror(errno) << std::endl;
+//            exit(1);
+//        }
+//        if(ev_cq != this->cq){
+//            std::cerr << "unknown cq" << std::endl;
+//            exit(1);
+//        }
+//
+//        ret = ibv_req_notify_cq(this->cq, 0);
+//        if (ret){
+//            std::cerr << "failed to request notify cq" << strerror(errno) << std::endl;
+//            exit(1);
+//        }
 
         cq_num = ibv_poll_cq(this->cq, 1, wc);
         for (int i = 0; i < cq_num; ++i) {
