@@ -452,7 +452,7 @@ void RDMAclient::bindaddr() {
         exit(1);
     }
 
-    while (ROUTE_RESOLVED == true){}
+    while (ROUTE_RESOLVED == false){}
 
 //    while (1){
 //        struct rdma_cm_event *event;
