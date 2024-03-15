@@ -613,11 +613,6 @@ void RDMAclient::handleCmConnections() {
                 }
                 break;
             case RDMA_CM_EVENT_ROUTE_RESOLVED:
-                ret = rdma_resolve_route(this->cm_id, 2000);
-                if (ret){
-                    std::cerr << "rdma_resolve_route error: " << strerror(errno) << std::endl;
-                    exit(1);
-                }
                 ROUTE_RESOLVED = true;
                 break;
 
