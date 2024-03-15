@@ -30,22 +30,26 @@ void RDMAServer::start() {
         std::cerr << "rdma_create_id error" << std::endl;
         exit(1);
     }
-
-    RDMAServer::init();
-
     //初始化完成后等待连接的建立
     std::thread connThread([this](){
         this->handleCmConnections();
     });
     connThread.detach(); //detach 后的线程与创建它的线程生命周期脱钩，成为了一个完全独立的执行流
+
+    RDMAServer::init();
     //创建一个线程处理cq
     std::thread cqThread([this](){
         this->handleCq();
     });
     cqThread.detach();
 
-
     std::cout << "等待连接建立" << std::endl;
+
+    ret = rdma_accept(this->child_cm_id, NULL);
+    if (ret) {
+        std::cerr << "rdma_accept error" << std::endl;
+        exit(1);
+    }
 
     while (CONNECTED == false){}
     std::cout << "连接建立" << std::endl;
@@ -241,7 +245,6 @@ void RDMAServer::init() {
 
     RDMAServer::bindaddr(); //调用liston并阻塞，直到有连接请求
 
-    pd = new struct ibv_pd;
     pd = ibv_alloc_pd(child_cm_id->verbs);
     if (!pd) {
         std::cerr << "ibv_alloc_pd error" << std::endl;
@@ -250,7 +253,6 @@ void RDMAServer::init() {
 
     std::cout << "pd 创建完成" << std::endl;
 
-    channel = new struct ibv_comp_channel;
     channel = ibv_create_comp_channel(child_cm_id->verbs);
     if (!channel) {
         std::cerr << "ibv_create_comp_channel error" << std::endl;
@@ -259,7 +261,6 @@ void RDMAServer::init() {
 
     std::cout << "channel 创建完成" << std::endl;
 
-    cq = new struct ibv_cq;
     cq = ibv_create_cq(child_cm_id->verbs, SQ_DEPTH * 2, NULL, this->channel, 0);
     if (!cq) {
         std::cerr << "ibv_create_cq error" << std::endl;
@@ -274,7 +275,6 @@ void RDMAServer::init() {
         exit(1);
     }
 
-    qp = new struct ibv_qp;
     ret = rdma_create_qp(child_cm_id, pd, &init_attr);
     if (ret) {
         std::cerr << "rdma_create_qp error" << std::endl;
@@ -290,13 +290,6 @@ void RDMAServer::init() {
         std::cerr << "ibv_post_recv error" << std::endl;
         exit(1);
     }
-
-    ret = rdma_accept(this->child_cm_id, NULL);
-    if (ret) {
-        std::cerr << "rdma_accept error" << std::endl;
-        exit(1);
-    }
-
 }
 
 void RDMAServer::bindaddr() {
@@ -555,33 +548,18 @@ void RDMAclient::init() {
 
     RDMAclient::bindaddr(); //
 
-    auto conn_param = new struct rdma_conn_param;
-    conn_param->responder_resources = 1;
-    conn_param->initiator_depth = 1;
-    conn_param->retry_count = 7;
-    conn_param->rnr_retry_count = 7;
-
-    ret = rdma_connect(this->cm_id, conn_param);
-    if (ret) {
-        std::cerr << "rdma_accept error" << std::endl;
-        exit(1);
-    }
-
-    this->pd = new struct ibv_pd;
     this->pd = ibv_alloc_pd(this->cm_id->verbs);
     if (!this->pd) {
         std::cerr << "ibv_alloc_pd error" << std::endl;
         exit(1);
     }
 
-    this->channel = new struct ibv_comp_channel;
     this->channel = ibv_create_comp_channel(this->cm_id->verbs);
     if (!this->channel) {
         std::cerr << "ibv_create_comp_channel error" << std::endl;
         exit(1);
     }
 
-    this->cq = new struct ibv_cq;
     this->cq = ibv_create_cq(this->cm_id->verbs, SQ_DEPTH * 2, NULL, this->channel, 0);
     if (!this->cq) {
         std::cerr << "ibv_create_cq error" << std::endl;
@@ -594,13 +572,12 @@ void RDMAclient::init() {
         exit(1);
     }
 
-    this->qp = new struct ibv_qp;
     ret = rdma_create_qp(this->cm_id, this->pd, &init_attr);
     if (ret) {
         std::cerr << "rdma_create_qp error" << std::endl;
         exit(1);
     }
-    this->qp = this->cm_id->qp;
+    qp = cm_id->qp;
 
     RDMAclient::rdma_buffer_init();
 
@@ -741,19 +718,31 @@ void RDMAclient::start() {
         exit(1);
     }
 
-    RDMAclient::init();
-
     //初始化完成后等待连接的建立
     std::thread connThread([this](){
         this->handleCmConnections();
     });
     connThread.detach(); //detach 后的线程与创建它的线程生命周期脱钩，成为了一个完全独立的执行流
 
+    RDMAclient::init();
+
     //创建一个线程处理cq
     std::thread cqThread([this](){
         this->handleCq();
     });
     cqThread.detach();
+
+    auto conn_param = new struct rdma_conn_param;
+    conn_param->responder_resources = 1;
+    conn_param->initiator_depth = 1;
+    conn_param->retry_count = 7;
+    conn_param->rnr_retry_count = 7;
+
+    ret = rdma_connect(this->cm_id, conn_param);
+    if (ret) {
+        std::cerr << "rdma_accept error" << std::endl;
+        exit(1);
+    }
 
     while (CONNECTED == false){}
     std::cout << "连接建立" << std::endl;
