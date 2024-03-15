@@ -39,10 +39,10 @@ void RDMAServer::start() {
     });
     connThread.detach(); //detach 后的线程与创建它的线程生命周期脱钩，成为了一个完全独立的执行流
     //创建一个线程处理cq
-//    std::thread cqThread([this](){
-//        this->handleCq();
-//    });
-//    cqThread.detach();
+    std::thread cqThread([this](){
+        this->handleCq();
+    });
+    cqThread.detach();
 
 
     std::cout << "等待连接建立" << std::endl;
@@ -50,7 +50,7 @@ void RDMAServer::start() {
     while (CONNECTED == false){}
     std::cout << "连接建立" << std::endl;
 
-    handleCq();
+//    handleCq();
 
 }
 
@@ -283,8 +283,9 @@ void RDMAServer::init() {
     qp = child_cm_id->qp;
 
     RDMAServer::rdma_buffer_init();
+    struct ibv_recv_wr *bad_wr = new struct ibv_recv_wr;
 
-    ret = ibv_post_recv(this->qp, &this->rq_wr, NULL);
+    ret = ibv_post_recv(this->qp, &rq_wr, &bad_wr);
     if (ret) {
         std::cerr << "ibv_post_recv error" << std::endl;
         exit(1);
