@@ -555,6 +555,18 @@ void RDMAclient::init() {
 
     RDMAclient::bindaddr(); //
 
+    auto conn_param = new struct rdma_conn_param;
+    conn_param->responder_resources = 1;
+    conn_param->initiator_depth = 1;
+    conn_param->retry_count = 7;
+    conn_param->rnr_retry_count = 7;
+
+    ret = rdma_connect(this->cm_id, conn_param);
+    if (ret) {
+        std::cerr << "rdma_accept error" << std::endl;
+        exit(1);
+    }
+
     this->pd = new struct ibv_pd;
     this->pd = ibv_alloc_pd(this->cm_id->verbs);
     if (!this->pd) {
@@ -598,18 +610,6 @@ void RDMAclient::init() {
         exit(1);
     }
 
-//    struct rdma_conn_param conn_param;
-    auto conn_param = new struct rdma_conn_param;
-    conn_param->responder_resources = 1;
-    conn_param->initiator_depth = 1;
-    conn_param->retry_count = 7;
-    conn_param->rnr_retry_count = 7;
-
-    ret = rdma_connect(this->cm_id, conn_param);
-    if (ret) {
-        std::cerr << "rdma_accept error" << std::endl;
-        exit(1);
-    }
 }
 
 void RDMAclient::handleCmConnections() {
