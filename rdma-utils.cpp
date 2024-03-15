@@ -452,6 +452,8 @@ void RDMAclient::bindaddr() {
         exit(1);
     }
 
+    while (ROUTE_RESOLVED == true){}
+
 //    while (1){
 //        struct rdma_cm_event *event;
 //        ret = rdma_get_cm_event(this->cm_channel, &event);
