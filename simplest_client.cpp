@@ -303,7 +303,7 @@ void simple_client::start() {
         std::cerr << "ibv_create_comp_channel error: " << strerror(errno) << std::endl;
         exit(1);
     }
-    cq = ibv_create_cq(cm_id->verbs, 2, NULL, channel, 0);
+    cq = ibv_create_cq(cm_id->verbs, SQ_DEPTH * 2, NULL, channel, 0);
     if (!cq){
         std::cerr << "ibv_create_cq error: " << strerror(errno) << std::endl;
     }

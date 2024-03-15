@@ -11,6 +11,7 @@
 #include <netdb.h>
 #include <thread>
 #include <endian.h>
+#include "common.h"
 
 
 void RDMAServer::start() {
@@ -555,25 +556,25 @@ void RDMAclient::init() {
 
     RDMAclient::bindaddr(); //
 
-    this->pd = ibv_alloc_pd(this->cm_id->verbs);
-    if (!this->pd) {
+    pd = ibv_alloc_pd(cm_id->verbs);
+    if (!pd) {
         std::cerr << "ibv_alloc_pd error" << std::endl;
         exit(1);
     }
 
-    this->channel = ibv_create_comp_channel(this->cm_id->verbs);
-    if (!this->channel) {
+    channel = ibv_create_comp_channel(cm_id->verbs);
+    if (!channel) {
         std::cerr << "ibv_create_comp_channel error" << std::endl;
         exit(1);
     }
 
-    this->cq = ibv_create_cq(this->cm_id->verbs, SQ_DEPTH * 2, NULL, this->channel, 0);
-    if (!this->cq) {
+    cq = ibv_create_cq(cm_id->verbs, SQ_DEPTH * 2, NULL, channel, 0);
+    if (!cq) {
         std::cerr << "ibv_create_cq error" << std::endl;
         exit(1);
     }
 
-    ret = ibv_req_notify_cq(this->cq, 0);
+    ret = ibv_req_notify_cq(cq, 0);
     if (ret) {
         std::cerr << "ibv_req_notify_cq error" << std::endl;
         exit(1);
@@ -588,7 +589,8 @@ void RDMAclient::init() {
 
     RDMAclient::rdma_buffer_init();
 
-    ret = ibv_post_recv(this->qp, &this->rq_wr, NULL);
+    struct ibv_recv_wr *bad_wr;
+    ret = ibv_post_recv(this->qp, &this->rq_wr, &bad_wr);
     if (ret) {
         std::cerr << "ibv_post_recv error" << std::endl;
         exit(1);
@@ -727,7 +729,7 @@ void RDMAclient::start() {
 
     int ret;
 
-    this->cm_channel = rdma_create_event_channel();
+    this->cm_channel = create_first_event_channel();
     if (!this->cm_channel) {
         std::cerr << "rdma_create_event_channel error" << std::endl;
         exit(1);
@@ -752,7 +754,7 @@ void RDMAclient::start() {
     });
     cqThread.detach();
 
-    struct rdma_conn_param conn_param;
+    struct rdma_conn_param conn_param = {};
     conn_param.responder_resources = 1;
     conn_param.initiator_depth = 1;
     conn_param.retry_count = 7;
