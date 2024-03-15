@@ -14,13 +14,10 @@ void RDMAclient::send_first_infomation(){
     sq_wr.opcode = IBV_WR_SEND_WITH_IMM;
     sq_wr.imm_data = htobe32(CLIENT_SEND_ADDRINFO);
     ret = ibv_post_send(this->qp, &this->sq_wr, &bad_wr);
-
     if(ret){
         std::cout << "post send error" << std::endl;
         exit(1);
     }
-
-
 }
 
 
@@ -45,13 +42,14 @@ int main() {
 //    });
 
     client->start();
+    client->send_first_infomation();
 
 
 
 
     //rdma 操作之前
 //    clientThread.join();
-    client->send_first_infomation();
+
 //    client->rdma_write();
 //    client->rdma_read();
 
