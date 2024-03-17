@@ -174,7 +174,7 @@ void simple_server::cq_thread() {
             switch (wc.opcode) {
                 case IBV_WC_RECV:
                     std::cout << "rdma recv success" << std::endl;
-                    server_recv_handler(&wc);
+                    server_recv_handler(wc);
                     break;
                 case IBV_WC_SEND:
                     std::cout << "rdma send success" << std::endl;
