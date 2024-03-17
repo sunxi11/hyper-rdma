@@ -440,7 +440,6 @@ int main() {
     server->rdma_read();
 
 
-
     while (1){}
 };
 
