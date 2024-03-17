@@ -178,12 +178,45 @@ void simple_server::cq_thread() {
                     break;
                 case IBV_WC_SEND:
                     std::cout << "rdma send success" << std::endl;
+                case IBV_WC_RDMA_READ:
+                    std::cout << "rdma read success" << std::endl;
+                    std::cout << "read data: " << rdma_buf << std::endl;
+                    break;
                 default:
                     break;
             }
         }
         ibv_ack_cq_events(cq, 1);
     }
+}
+
+void simple_server::rdma_read() {
+    struct ibv_send_wr *bad_wr;
+    int ret;
+
+    if(state != SERVER_GET_REMOTE_ADDR){
+        std::cout << "error" << std::endl;
+        exit(1);
+    }
+
+    rdma_sq_wr.opcode = IBV_WR_RDMA_READ;
+    rdma_sq_wr.wr.rdma.remote_addr = remote_addr;
+    rdma_sq_wr.wr.rdma.rkey = remote_rkey;
+
+    rdma_sgl.addr = (uint64_t )(unsigned long) rdma_buf;
+    rdma_sgl.lkey = rdma_mr->lkey;
+    rdma_sgl.length = remote_len;
+
+    rdma_sq_wr.num_sge = 1;
+    rdma_sq_wr.sg_list = &this->rdma_sgl;
+
+    ret = ibv_post_send(qp, &rdma_sq_wr, &bad_wr);
+    if (ret){
+        std::cerr << "ibv_post_send error: " << strerror(errno) << std::endl;
+        exit(1);
+    }
+
+
 }
 
 void simple_server::server_recv_handler(struct ibv_wc& wc) {
@@ -199,6 +232,8 @@ void simple_server::server_recv_handler(struct ibv_wc& wc) {
     std::cout << "接受到远程地址信息 addr: " << remote_addr << std::endl;
     std::cout << "接受到远程地址信息 len: " << remote_len << std::endl;
     std::cout << "接受到远程地址信息 rkey: " << remote_rkey << std::endl;
+
+    state = SERVER_GET_REMOTE_ADDR;
 
 
 }
@@ -405,6 +440,9 @@ int main() {
     char *rdma_buf = (char *)malloc(32);
     simple_server *server = new simple_server("10.0.0.5", 1245, start_buf, 32, rdma_buf, 32);
     server->start();
+    server->rdma_read();
+
+
 
     while (1){}
 };

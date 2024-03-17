@@ -386,6 +386,8 @@ void simple_client::start() {
 int main(){
     char *start_buf = (char *)malloc(32);
     char *rdma_buf = (char *)malloc(32);
+    strcpy(start_buf, "hello world form client");
+
     simple_client *client = new simple_client("10.0.0.5", 1245, start_buf, 32, rdma_buf, 32);
     client->start();
 
