@@ -288,7 +288,6 @@ void simple_client::start() {
     std::thread cmthread([this](){
         this->cm_thread();
     });
-
     cmthread.detach();
 
     bindaddr();

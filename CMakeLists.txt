@@ -25,3 +25,6 @@ target_link_libraries(hyper_rdma_server rdmacm ibverbs rdmacm_tools pthread)
 add_executable(simple_client simplest_client.cpp )
 target_link_libraries(simple_client rdmacm ibverbs rdmacm_tools pthread)
 
+add_executable(simple_server simplest_server.cpp.cpp )
+target_link_libraries(simple_server rdmacm ibverbs rdmacm_tools pthread)
+
