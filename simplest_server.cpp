@@ -194,10 +194,7 @@ void simple_server::rdma_read() {
     struct ibv_send_wr *bad_wr;
     int ret;
 
-    if(state != SERVER_GET_REMOTE_ADDR){
-        std::cout << "error" << std::endl;
-        exit(1);
-    }
+    while (state != SERVER_GET_REMOTE_ADDR) {}
 
     rdma_sq_wr.opcode = IBV_WR_RDMA_READ;
     rdma_sq_wr.wr.rdma.remote_addr = remote_addr;
