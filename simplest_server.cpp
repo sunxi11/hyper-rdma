@@ -10,6 +10,7 @@
 #include <endian.h>
 #include "common.h"
 #include <thread>
+#include <time.h>
 
 #define SQ_DEPTH 16
 
@@ -20,6 +21,7 @@ enum ServerState{
     CONNECTED,
     ROUTE_RESOLVED,
     ADDR_RESOLVED,
+    SERVER_GET_REMOTE_ADDR,
 };
 
 
@@ -41,6 +43,7 @@ public:
     void cm_thread();
     void cq_thread();
     void setup_buffer();
+    void server_recv_handler(struct ibv_wc&);
 
 
     private:
@@ -78,6 +81,10 @@ public:
     struct ibv_mr *rdma_mr;
 
     struct ibv_mr *start_mr;
+
+    uint32_t remote_rkey;		/* remote guys RKEY */
+    uint64_t remote_addr;		/* remote guys TO */
+    uint32_t remote_len;		/* remote guys LEN */
 };
 
 void simple_server::setup_buffer() {
@@ -167,6 +174,7 @@ void simple_server::cq_thread() {
             switch (wc.opcode) {
                 case IBV_WC_RECV:
                     std::cout << "rdma recv success" << std::endl;
+                    server_recv_handler(&wc);
                     break;
                 case IBV_WC_SEND:
                     std::cout << "rdma send success" << std::endl;
@@ -176,6 +184,23 @@ void simple_server::cq_thread() {
         }
         ibv_ack_cq_events(cq, 1);
     }
+}
+
+void simple_server::server_recv_handler(struct ibv_wc& wc) {
+    if(wc.byte_len != sizeof(recv_buf)){
+        std::cout << "接受错误" << std::endl;
+        exit(1);
+    }
+
+    remote_addr = be64toh(recv_buf.buf);
+    remote_len = be32toh(recv_buf.size);
+    remote_rkey = be32toh(recv_buf.rkey);
+
+    std::cout << "接受到远程地址信息 addr: " << remote_addr << std::endl;
+    std::cout << "接受到远程地址信息 len: " << remote_len << std::endl;
+    std::cout << "接受到远程地址信息 rkey: " << remote_rkey << std::endl;
+
+
 }
 
 void simple_server::cm_thread(){
@@ -357,7 +382,6 @@ void simple_server::start() {
         std::cerr << "ibv_post_recv error: " << strerror(errno) << std::endl;
         exit(1);
     }
-
     //启动cq
     std::thread cqthread([this](){
         this->cq_thread();
@@ -381,5 +405,7 @@ int main() {
     char *rdma_buf = (char *)malloc(32);
     simple_server *server = new simple_server("10.0.0.5", 1245, start_buf, 32, rdma_buf, 32);
     server->start();
+
+    while (1){}
 };
 
