@@ -190,8 +190,8 @@ void simple_server::cq_thread() {
                 case IBV_WC_RDMA_READ:
                     std::cout << "rdma read success" << std::endl;
                     memcpy(&sketch_data[0], rdma_buf, rdma_size);
-                    for (auto &i : sketch_data){
-                        std::cout << i.first << " " << i.second << std::endl;
+                    for (int i = 0; i < (rdma_size / sizeof(std::pair<int, int>)); i++){
+                        std::cout << sketch_data[i].first << " " << sketch_data[i].second << std::endl;
                     }
                     std::cout << "read data: " << rdma_buf << std::endl;
                     break;
