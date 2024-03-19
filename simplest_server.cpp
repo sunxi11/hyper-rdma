@@ -30,7 +30,7 @@ enum ServerState{
     SERVER_READ_COMPLETE1,
 };
 
-std::vector<std::pair<int, int>> sketch_data;
+std::vector<std::pair<int, int>> sketch_data(1000, std::make_pair(0, 0));
 
 
 class simple_server{
