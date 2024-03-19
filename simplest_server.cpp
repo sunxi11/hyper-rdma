@@ -11,6 +11,8 @@
 #include "common.h"
 #include <thread>
 #include <time.h>
+#include <vector>
+#include <algorithm>
 
 #define SQ_DEPTH 16
 
@@ -182,8 +184,14 @@ void simple_server::cq_thread() {
                     break;
                 case IBV_WC_SEND:
                     std::cout << "rdma send success" << std::endl;
+                    break;
                 case IBV_WC_RDMA_READ:
+                    std::vector<std::pair<int, int>> sketch_data;
                     std::cout << "rdma read success" << std::endl;
+                    memcpy(&sketch_data[0], rdma_buf, rdma_size);
+                    for (auto &i : sketch_data){
+                        std::cout << i.first << " " << i.second << std::endl;
+                    }
                     std::cout << "read data: " << rdma_buf << std::endl;
                     break;
                 default:
@@ -437,9 +445,24 @@ void simple_server::start() {
 
 
 int main() {
-    char *start_buf = (char *)malloc(32);
-    char *rdma_buf = (char *)malloc(32);
-    simple_server *server = new simple_server("10.0.0.2", 1245, start_buf, 32, rdma_buf, 32);
+//    char *start_buf = (char *)malloc(32);
+//    char *rdma_buf = (char *)malloc(32);
+
+    char *start_buf, *rdma_buf;
+
+    std::vector<std::pair<int, int>> sketch_data;
+    for (int i = 0; i < 100; i++){
+        sketch_data.push_back(std::make_pair(i, i));
+    }
+    int sketch_data_size = sketch_data.size() * sizeof(std::pair<int, int>);
+
+    start_buf = (char *)malloc(sketch_data_size);
+    rdma_buf = (char *)malloc(sketch_data_size);
+
+    memcpy(start_buf, &sketch_data[0], sketch_data_size);
+
+
+    simple_server *server = new simple_server("10.0.0.2", 1245, start_buf, sketch_data_size, rdma_buf, sketch_data_size);
     server->start();
     server->rdma_read();
 
