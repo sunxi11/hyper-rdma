@@ -27,6 +27,8 @@ enum ClientState{
 
 };
 
+std::vector<std::pair<int, int>> sketch_data;
+
 class simple_client{
     public:
     simple_client(const char *ip, int port, void *start_buf, int start_size, void *rdma_buf, int rdma_size);
@@ -391,7 +393,6 @@ int main(){
 
     char *start_buf, *rdma_buf;
 
-    std::vector<std::pair<int, int>> sketch_data;
     for (int i = 0; i < 100; i++){
         sketch_data.push_back(std::make_pair(i, i));
     }
