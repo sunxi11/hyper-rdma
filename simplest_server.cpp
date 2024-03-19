@@ -22,6 +22,10 @@ enum ServerState{
     ROUTE_RESOLVED,
     ADDR_RESOLVED,
     SERVER_GET_REMOTE_ADDR,
+    SERVER_READ_ADV,
+    SERVER_WRITE_ADV,
+    SERVER_WRITE_COMPLETE,
+    SERVER_READ_COMPLETE,
 };
 
 
@@ -435,7 +439,7 @@ void simple_server::start() {
 int main() {
     char *start_buf = (char *)malloc(32);
     char *rdma_buf = (char *)malloc(32);
-    simple_server *server = new simple_server("10.0.0.5", 1245, start_buf, 32, rdma_buf, 32);
+    simple_server *server = new simple_server("10.0.0.2", 1245, start_buf, 32, rdma_buf, 32);
     server->start();
     server->rdma_read();
 

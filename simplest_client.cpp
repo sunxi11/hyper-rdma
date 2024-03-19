@@ -388,7 +388,7 @@ int main(){
     char *rdma_buf = (char *)malloc(32);
     strcpy(start_buf, "hello world form client");
 
-    simple_client *client = new simple_client("10.0.0.5", 1245, start_buf, 32, rdma_buf, 32);
+    simple_client *client = new simple_client("10.0.0.2", 1245, start_buf, 32, rdma_buf, 32);
     client->start();
 
     while (1){}
