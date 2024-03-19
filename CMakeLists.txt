@@ -28,3 +28,6 @@ target_link_libraries(simple_client rdmacm ibverbs rdmacm_tools pthread)
 add_executable(simple_server simplest_server.cpp )
 target_link_libraries(simple_server rdmacm ibverbs rdmacm_tools pthread)
 
+add_executable(ibinfo get_ibinfo.cpp)
+target_link_libraries(ibinfo rdmacm ibverbs rdmacm_tools pthread)
+

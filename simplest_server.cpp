@@ -177,6 +177,7 @@ void simple_server::cq_thread() {
         }
 
         struct ibv_wc wc;
+        //接受的一个wc的列表（指针）wc[0] 是第一个
         while ((ret = ibv_poll_cq(cq, 1, &wc)) == 1){
             ret = 0;
             switch (wc.opcode) {
