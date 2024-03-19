@@ -75,6 +75,8 @@ int main(int argc, char *argv[]){
     std::cout << "Max WR: " << dev_attr.max_qp_wr << std::endl;
     std::cout << "Max SGE: " << dev_attr.max_sge << std::endl;
 
+    rdma_destroy_id(id);
+    rdma_destroy_event_channel(channel);
 
 
 
