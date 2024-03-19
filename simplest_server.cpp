@@ -30,6 +30,8 @@ enum ServerState{
     SERVER_READ_COMPLETE1,
 };
 
+std::vector<std::pair<int, int>> sketch_data;
+
 
 class simple_server{
 public:
@@ -186,7 +188,6 @@ void simple_server::cq_thread() {
                     std::cout << "rdma send success" << std::endl;
                     break;
                 case IBV_WC_RDMA_READ:
-                    std::vector<std::pair<int, int>> sketch_data;
                     std::cout << "rdma read success" << std::endl;
                     memcpy(&sketch_data[0], rdma_buf, rdma_size);
                     for (auto &i : sketch_data){
@@ -196,6 +197,7 @@ void simple_server::cq_thread() {
                     break;
                 default:
                     break;
+
             }
         }
         ibv_ack_cq_events(cq, 1);
