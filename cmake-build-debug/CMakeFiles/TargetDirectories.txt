@@ -1,8 +1,0 @@
-/Users/sun/CLionProjects/hyper-rdma/cmake-build-debug/CMakeFiles/rdmacm_tools.dir
-/Users/sun/CLionProjects/hyper-rdma/cmake-build-debug/CMakeFiles/hyper_rdma_client.dir
-/Users/sun/CLionProjects/hyper-rdma/cmake-build-debug/CMakeFiles/hyper_rdma_server.dir
-/Users/sun/CLionProjects/hyper-rdma/cmake-build-debug/CMakeFiles/simple_client.dir
-/Users/sun/CLionProjects/hyper-rdma/cmake-build-debug/CMakeFiles/simple_server.dir
-/Users/sun/CLionProjects/hyper-rdma/cmake-build-debug/CMakeFiles/ibinfo.dir
-/Users/sun/CLionProjects/hyper-rdma/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/sun/CLionProjects/hyper-rdma/cmake-build-debug/CMakeFiles/rebuild_cache.dir
