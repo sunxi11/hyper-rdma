@@ -403,11 +403,7 @@ int main(){
 
     memcpy(start_buf, &sketch_data[0], sketch_data_size);
 
-
-
-
 //    strcpy(start_buf, "hello world form client");
-
     simple_client *client = new simple_client("10.0.0.2", 1245, start_buf, sketch_data_size, rdma_buf, sketch_data_size);
     client->start();
 
