@@ -475,10 +475,14 @@ int main() {
     start_buf = (char *)malloc(1000);
     rdma_buf = (char *)malloc(1000);
 
+    strcpy(start_buf, "hello world form server");
+
 
     simple_server *server = new simple_server("10.0.0.2", 1245, start_buf, 1000, rdma_buf, 1000);
     server->start();
 //    server->rdma_read();
+
+
 
 
     while (1){}
