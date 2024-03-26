@@ -290,6 +290,9 @@ void simple_client::rdma_read() {
     rdma_sq_wr.num_sge = 1;
     rdma_sq_wr.sg_list = &rdma_sgl;
 
+
+    std::cout << "发送读请求" << std::endl;
+
     ret = ibv_post_send(qp, &rdma_sq_wr, &bad_wr);
     if (ret){
         std::cerr << "ibv_post_send error: " << strerror(errno) << std::endl;
@@ -491,8 +494,6 @@ int main(){
 //    strcpy(start_buf, "hello world form client");
     simple_client *client = new simple_client("10.0.0.2", 1245, start_buf, sketch_data_size, rdma_buf, sketch_data_size);
     client->start();
-
-
     client->rdma_read();
 
     while (1){}
