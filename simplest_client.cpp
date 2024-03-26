@@ -23,8 +23,6 @@ enum ClientState{
     ROUTE_RESOLVED,
     ADDR_RESOLVED,
     CONNECTED,
-
-
 };
 
 std::vector<std::pair<int, int>> sketch_data;
