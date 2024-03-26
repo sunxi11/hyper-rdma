@@ -211,6 +211,19 @@ void simple_client::cq_thread() {
                     break;
                 case IBV_WC_RECV:
                     std::cout << "recv complete" << std::endl;
+                    remote_addr = be64toh(recv_buf.buf);
+                    remote_len = be32toh(recv_buf.size);
+                    remote_rkey = be32toh(recv_buf.rkey);
+
+                    std::cout << "接受到远程地址信息 addr: " << remote_addr << std::endl;
+                    std::cout << "接受到远程地址信息 len: " << remote_len << std::endl;
+                    std::cout << "接受到远程地址信息 rkey: " << remote_rkey << std::endl;
+                    state = GET_RDMA_ADDR;
+                    ibv_post_recv(qp, &rq_wr, NULL);
+                    std::cout << "get imm_data: " << be32toh(wc.imm_data) << std::endl;
+
+
+
                     break;
 
                 case IBV_WC_RECV_RDMA_WITH_IMM:
