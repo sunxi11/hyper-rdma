@@ -254,6 +254,8 @@ void simple_client::cq_thread() {
                 case IBV_WC_RDMA_READ:
                     std::cout << "rdma read complete" << std::endl;
                     RDMA_READ_COMPLETE = true;
+
+                    std::cout << "read data: " << rdma_buf << std::endl;
                     break;
                 default:
                     break;
@@ -294,9 +296,9 @@ void simple_client::rdma_read() {
         exit(1);
     }
 
-    while (RDMA_READ_COMPLETE = false){}
-
-    std::cout << "read data: " << rdma_buf << std::endl;
+//    while (RDMA_READ_COMPLETE = false){}
+//
+//    std::cout << "read data: " << rdma_buf << std::endl;
 
 }
 
