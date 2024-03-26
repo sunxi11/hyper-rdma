@@ -514,6 +514,8 @@ int main(){
 
     client->rdma_write();
 
+    client->rdma_read();
+
 
     while (1){}
 
