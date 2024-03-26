@@ -268,6 +268,11 @@ void simple_client::cq_thread() {
 }
 
 void simple_client::rdma_read() {
+    if(!GET_RDMA_ADDR){
+        std::cout << "error" << std::endl;
+        exit(1);
+    }
+
     RDMA_READ_COMPLETE = false;
 
     struct ibv_send_wr *bad_wr;
