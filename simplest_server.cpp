@@ -436,6 +436,11 @@ void simple_server::start() {
     while (state != CONNECTED){}
     std::cout << "连接建立" << std::endl;
 
+    //等待接受数据
+    while (SERVER_GET_REMOTE_ADDR == false){}
+
+
+    //发送数据
     send_buf.buf = htobe64((uint64_t)(unsigned long)this->start_buf);
     send_buf.rkey = htobe32(this->start_mr->rkey);
     send_buf.size = htobe32(this->start_size);
@@ -451,7 +456,7 @@ void simple_server::start() {
     }
 
     while (state != SERVER_RDMA_ADDR_SEND_COMPLETE){}
-    while (SERVER_GET_REMOTE_ADDR == false){}
+
 
 }
 
