@@ -6,8 +6,8 @@
 #define HYPER_RDMA_RDMA_UTILS_H
 
 #include <iostream>
-#include "include/rdma_cma.h"
-#include "include/verbs.h"
+#include "rdma_cma.h"
+#include "verbs.h"
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <cstdint>
@@ -86,12 +86,10 @@ private:
 
 
 enum ServerState{
-    INIT,
+    SERVER_INIT,
     SERVER_BIND,
     REQUEST_GET,
-    CONNECTED,
-    ROUTE_RESOLVED,
-    ADDR_RESOLVED,
+    SERVER_CONNECTED,
     SERVER_READ_ADV,
     SERVER_WRITE_ADV,
     SERVER_WRITE_COMPLETE1,
@@ -130,7 +128,7 @@ private:
     int start_size;
     char *rdma_buf;
     int rdma_size;
-    enum ServerState state = INIT;
+    enum ServerState state = SERVER_INIT;
     bool SERVER_GET_REMOTE_ADDR = false;
 
     struct rdma_event_channel *cm_channel;

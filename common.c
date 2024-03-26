@@ -42,7 +42,7 @@
 #include <netdb.h>
 
 #include <rdma/rdma_cma.h>
-#include "common.h"
+#include "include/common.h"
 
 int use_rs = 1;
 

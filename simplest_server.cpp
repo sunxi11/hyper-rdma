@@ -1,4 +1,4 @@
-#include "rdma-utils.h"
+#include "include/rdma-utils.h"
 #include <infiniband/verbs.h>
 #include <rdma/rdma_cma.h>
 #include <sys/socket.h>
@@ -8,7 +8,7 @@
 #include <netdb.h>
 #include <thread>
 #include <endian.h>
-#include "common.h"
+#include "include/common.h"
 #include <thread>
 #include <time.h>
 #include <vector>
@@ -234,11 +234,11 @@ void simple_server::cm_thread(){
                 child_cm_id = id;
                 break;
             case RDMA_CM_EVENT_CONNECT_RESPONSE:
-                state = CONNECTED;
+                state = SERVER_CONNECTED;
                 break;
 
             case RDMA_CM_EVENT_ESTABLISHED:
-                state = CONNECTED;
+                state = SERVER_CONNECTED;
                 break;
             default:
                 break;
