@@ -1,4 +1,3 @@
-#include "rdma-utils.h"
 #include <infiniband/verbs.h>
 #include <rdma/rdma_cma.h>
 #include <sys/socket.h>
