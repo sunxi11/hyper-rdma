@@ -241,7 +241,7 @@ void simple_client::cq_thread() {
                 case IBV_WC_RDMA_READ:
                     std::cout << "rdma read complete" << std::endl;
                     RDMA_READ_COMPLETE = true;
-                    std::cout << "read data: " << rdma_buf << std::endl;
+//                    std::cout << "read data: " << rdma_buf << std::endl;
                     break;
                 case IBV_WC_RDMA_WRITE:
                     RDMA_WRITE_COMPLETE = true;
@@ -281,7 +281,7 @@ void simple_client::rdma_read() {
     rdma_sq_wr.sg_list = &rdma_sgl;
 
 
-    std::cout << "发送读请求" << std::endl;
+//    std::cout << "发送读请求" << std::endl;
 
     ret = ibv_post_send(qp, &rdma_sq_wr, &bad_wr);
     if (ret){
@@ -290,6 +290,8 @@ void simple_client::rdma_read() {
     }
 
     while (RDMA_READ_COMPLETE == false){}
+
+    std::cout << "read data: " << rdma_buf << std::endl;
 }
 
 void simple_client::rdma_write() {
@@ -510,6 +512,7 @@ int main(){
     strcpy(start_buf, "hello world form client");
     simple_client *client = new simple_client("10.0.0.2", 1245, start_buf, 1000, rdma_buf, 1000);
     client->start();
+
     client->rdma_read();
 
     client->rdma_write();
