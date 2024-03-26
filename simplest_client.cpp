@@ -216,7 +216,7 @@ void simple_client::cq_thread() {
                 case IBV_WC_RECV_RDMA_WITH_IMM:
                     std::cout << "recv rdma with imm" << std::endl;;
                     if(be32toh(wc.imm_data) == 1122){
-                        std::cout << "get imm_data: " << imm_data << std::endl;
+                        std::cout << "get imm_data: " << be32toh(wc.imm_data) << std::endl;
                         if(wc.byte_len != sizeof(recv_buf)){
                             std::cout << "接受错误" << std::endl;
                             exit(1);
