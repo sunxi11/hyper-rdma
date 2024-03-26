@@ -18,71 +18,7 @@
 
 #define SQ_DEPTH 16
 
-enum ClientState{
-    INIT,
-    ROUTE_RESOLVED,
-    ADDR_RESOLVED,
-    CONNECTED,
-};
 
-std::vector<std::pair<int, int>> sketch_data;
-
-class simple_client{
-    public:
-    simple_client(const char *ip, int port, void *start_buf, int start_size, void *rdma_buf, int rdma_size);
-    void init();
-    void start();
-    void rdma_read();
-    void rdma_write();
-    void bindaddr();
-    void cm_thread();
-    void cq_thread();
-    void setup_buffer();
-    void recv_handler(struct ibv_wc &wc);
-
-    private:
-    const char *ip;
-    __be16 port;
-    struct sockaddr_storage *sin;
-    char *start_buf;
-    int start_size;
-    char *rdma_buf;
-    int rdma_size;
-    enum ClientState state = INIT;
-    bool GET_RDMA_ADDR = false;
-    bool RDMA_READ_COMPLETE = false;
-    bool RDMA_WRITE_COMPLETE = false;
-
-    struct rdma_event_channel *cm_channel;
-    struct rdma_cm_id *cm_id;	/* connection on client side,*/
-
-    struct ibv_comp_channel *channel;
-    struct ibv_cq *cq;
-    struct ibv_pd *pd;
-    struct ibv_qp *qp;
-
-    struct ibv_recv_wr rq_wr;	/* recv work request record */
-    struct ibv_sge recv_sgl;	/* recv single SGE */
-    struct rdma_info recv_buf;/* malloc'd buffer */
-    struct ibv_mr *recv_mr;		/* MR associated with this buffer */
-
-    struct ibv_send_wr sq_wr;	/* send work request record */
-    struct ibv_sge send_sgl;
-    struct rdma_info send_buf;/* single send buf */
-    struct ibv_mr *send_mr;        /* MR associated with this buffer */
-
-    struct ibv_send_wr rdma_sq_wr;	/* rdma work request record */
-    struct ibv_sge rdma_sgl;	/* rdma single SGE */
-    struct ibv_mr *rdma_mr;
-
-    struct ibv_mr *start_mr;
-
-    uint32_t remote_rkey;		/* remote guys RKEY */
-    uint64_t remote_addr;		/* remote guys TO */
-    uint32_t remote_len;		/* remote guys LEN */
-
-
-};
 
 simple_client::simple_client(const char *ip, int port, void *start_buf, int start_size, void *rdma_buf, int rdma_size) {
     this->ip = ip;
@@ -199,7 +135,6 @@ void simple_client::recv_handler(struct ibv_wc &wc){
 
 
 }
-
 
 void simple_client::cq_thread() {
     struct ibv_cq *ev_cq;
@@ -321,7 +256,6 @@ void simple_client::rdma_write() {
 
     while (RDMA_WRITE_COMPLETE == false){}
 }
-
 
 void simple_client::setup_buffer() {
     int ret;
