@@ -481,6 +481,18 @@ int main(){
     simple_client *client = new simple_client("10.0.0.2", 1245, start_buf, 1000, rdma_buf, 1000);
     client->start();
     client->rdma_read();
+    client->rdma_read();
+    client->rdma_read();
+    client->rdma_read();
+    client->rdma_read();
+    client->rdma_read();
+    client->rdma_read();
+    client->rdma_read();
+    client->rdma_read();
+    client->rdma_read();
+    client->rdma_read();
+    client->rdma_read();
+
 
     while (1){}
 
