@@ -53,6 +53,7 @@ class simple_client{
     enum ClientState state = INIT;
     bool GET_RDMA_ADDR = false;
     bool RDMA_READ_COMPLETE = false;
+    bool RDMA_WRITE_COMPLETE = false;
 
     struct rdma_event_channel *cm_channel;
     struct rdma_cm_id *cm_id;	/* connection on client side,*/
@@ -243,6 +244,7 @@ void simple_client::cq_thread() {
                     std::cout << "read data: " << rdma_buf << std::endl;
                     break;
                 case IBV_WC_RDMA_WRITE:
+                    RDMA_WRITE_COMPLETE = true;
                     std::cout << "rdma write complete" << std::endl;
                     break;
                 default:
@@ -286,9 +288,13 @@ void simple_client::rdma_read() {
         std::cerr << "ibv_post_send error: " << strerror(errno) << std::endl;
         exit(1);
     }
+
+    while (RDMA_READ_COMPLETE == false){}
 }
 
 void simple_client::rdma_write() {
+
+    RDMA_WRITE_COMPLETE = false;
     struct ibv_send_wr *bad_wr;
     int ret;
 
@@ -312,6 +318,8 @@ void simple_client::rdma_write() {
         std::cerr << "ibv_post_send error: " << strerror(errno) << std::endl;
         exit(1);
     }
+
+    while (RDMA_WRITE_COMPLETE == false){}
 }
 
 
