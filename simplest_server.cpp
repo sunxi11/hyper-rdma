@@ -23,7 +23,6 @@ enum ServerState{
     CONNECTED,
     ROUTE_RESOLVED,
     ADDR_RESOLVED,
-    SERVER_GET_REMOTE_ADDR,
     SERVER_READ_ADV,
     SERVER_WRITE_ADV,
     SERVER_WRITE_COMPLETE1,
@@ -65,6 +64,7 @@ public:
     char *rdma_buf;
     int rdma_size;
     enum ServerState state = INIT;
+    bool SERVER_GET_REMOTE_ADDR = false;
 
     struct rdma_event_channel *cm_channel;
     struct rdma_cm_id *cm_id;	/* connection on client side,*/
@@ -211,7 +211,10 @@ void simple_server::rdma_read() {
     struct ibv_send_wr *bad_wr;
     int ret;
 
-    while (state != SERVER_GET_REMOTE_ADDR) {}
+    if(SERVER_GET_REMOTE_ADDR = false){
+        std::cout << "error" << std::endl;
+        exit(1);
+    }
 
     rdma_sq_wr.opcode = IBV_WR_RDMA_READ;
     rdma_sq_wr.wr.rdma.remote_addr = remote_addr;
@@ -247,7 +250,7 @@ void simple_server::server_recv_handler(struct ibv_wc& wc) {
     std::cout << "接受到远程地址信息 len: " << remote_len << std::endl;
     std::cout << "接受到远程地址信息 rkey: " << remote_rkey << std::endl;
 
-    state = SERVER_GET_REMOTE_ADDR;
+    SERVER_GET_REMOTE_ADDR = true;
 
 
 }
@@ -462,6 +465,7 @@ void simple_server::start() {
     }
 
     while (state != SERVER_RDMA_ADDR_SEND_COMPLETE){}
+    while (SERVER_GET_REMOTE_ADDR == false){}
 
 }
 

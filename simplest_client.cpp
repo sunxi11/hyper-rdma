@@ -274,13 +274,8 @@ void simple_client::rdma_read() {
     }
 
     RDMA_READ_COMPLETE = false;
-
     struct ibv_send_wr *bad_wr;
     int ret;
-    if (GET_RDMA_ADDR = false){
-        std::cout << "error" << std::endl;
-        exit(1);
-    }
 
     rdma_sq_wr.opcode = IBV_WR_RDMA_READ;
     rdma_sq_wr.wr.rdma.remote_addr = remote_addr;
@@ -465,6 +460,8 @@ void simple_client::start() {
         std::cout << "post send error" << std::endl;
         exit(1);
     }
+
+    while(GET_RDMA_ADDR == false){}
 
 
 
