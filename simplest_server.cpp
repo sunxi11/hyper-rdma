@@ -208,6 +208,10 @@ void simple_server::cq_thread() {
 }
 
 void simple_server::rdma_read() {
+    if(!SERVER_GET_REMOTE_ADDR){
+        std::cout << "error" << std::endl;
+        exit(1);
+    }
     struct ibv_send_wr *bad_wr;
     int ret;
 
@@ -232,8 +236,32 @@ void simple_server::rdma_read() {
         std::cerr << "ibv_post_send error: " << strerror(errno) << std::endl;
         exit(1);
     }
+}
 
+void simple_server::rdma_write() {
+    struct ibv_send_wr *bad_wr;
+    int ret;
 
+    strcpy(rdma_buf, "write some data from client");
+
+    rdma_sq_wr.opcode = IBV_WR_RDMA_WRITE;
+    rdma_sq_wr.wr.rdma.remote_addr = remote_addr;
+    rdma_sq_wr.wr.rdma.rkey = remote_rkey;
+
+    rdma_sgl.addr = (uint64_t )(unsigned long) this->rdma_buf;
+    rdma_sgl.lkey = this->rdma_mr->lkey;
+    rdma_sgl.length = remote_len;
+
+    rdma_sq_wr.num_sge = 1;
+    rdma_sq_wr.sg_list = &rdma_sgl;
+
+    std::cout << "发送写请求" << std::endl;
+
+    ret = ibv_post_send(qp, &rdma_sq_wr, &bad_wr);
+    if (ret){
+        std::cerr << "ibv_post_send error: " << strerror(errno) << std::endl;
+        exit(1);
+    }
 }
 
 void simple_server::server_recv_handler(struct ibv_wc& wc) {
