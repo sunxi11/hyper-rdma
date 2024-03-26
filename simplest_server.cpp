@@ -215,18 +215,18 @@ void simple_server::cm_thread(){
         id = event->id;
         switch (event->event) {
             case RDMA_CM_EVENT_ADDR_RESOLVED:
-                ret = rdma_resolve_route(id, 2000);
-                if (ret){
-                    std::cerr << "rdma_resolve_route error: " << strerror(errno) << std::endl;
-                    exit(1);
-                }
-                state = ADDR_RESOLVED;
+//                ret = rdma_resolve_route(id, 2000);
+//                if (ret){
+//                    std::cerr << "rdma_resolve_route error: " << strerror(errno) << std::endl;
+//                    exit(1);
+//                }
+//                state = ADDR_RESOLVED;
                 break;
             case RDMA_CM_EVENT_ROUTE_RESOLVED:
-                if (state != ADDR_RESOLVED){
-                    std::cout << "error" << std::endl;
-                }
-                state = ROUTE_RESOLVED;
+//                if (state != ADDR_RESOLVED){
+//                    std::cout << "error" << std::endl;
+//                }
+//                state = ROUTE_RESOLVED;
                 break;
             case RDMA_CM_EVENT_CONNECT_REQUEST:
                 std::cout << "服务端接收到连接请求" << std::endl;
