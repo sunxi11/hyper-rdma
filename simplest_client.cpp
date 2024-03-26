@@ -467,18 +467,18 @@ int main(){
 
     char *start_buf, *rdma_buf;
 
-    for (int i = 0; i < 100; i++){
-        sketch_data.push_back(std::make_pair(i, i));
-    }
-    int sketch_data_size = sketch_data.size() * sizeof(std::pair<int, int>);
+//    for (int i = 0; i < 100; i++){
+//        sketch_data.push_back(std::make_pair(i, i));
+//    }
+//    int sketch_data_size = sketch_data.size() * sizeof(std::pair<int, int>);
 
-    start_buf = (char *)malloc(sketch_data_size);
-    rdma_buf = (char *)malloc(sketch_data_size);
+    start_buf = (char *)malloc(1000);
+    rdma_buf = (char *)malloc(1000);
 
-    memcpy(start_buf, &sketch_data[0], sketch_data_size);
+//    memcpy(start_buf, &sketch_data[0], sketch_data_size);
 
-//    strcpy(start_buf, "hello world form client");
-    simple_client *client = new simple_client("10.0.0.2", 1245, start_buf, sketch_data_size, rdma_buf, sketch_data_size);
+    strcpy(start_buf, "hello world form client");
+    simple_client *client = new simple_client("10.0.0.2", 1245, start_buf, 1000, rdma_buf, 1000);
     client->start();
     client->rdma_read();
 
