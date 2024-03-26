@@ -28,6 +28,7 @@ enum ServerState{
     SERVER_WRITE_ADV,
     SERVER_WRITE_COMPLETE1,
     SERVER_READ_COMPLETE1,
+    SERVER_RDMA_ADDR_SEND_COMPLETE,
 };
 
 std::vector<std::pair<int, int>> sketch_data(1000, std::make_pair(0, 0));
@@ -187,6 +188,7 @@ void simple_server::cq_thread() {
                     break;
                 case IBV_WC_SEND:
                     std::cout << "rdma send success" << std::endl;
+                    state = SERVER_RDMA_ADDR_SEND_COMPLETE;
                     break;
                 case IBV_WC_RDMA_READ:
                     std::cout << "rdma read success" << std::endl;
@@ -444,6 +446,23 @@ void simple_server::start() {
 
     while (state != CONNECTED){}
     std::cout << "连接建立" << std::endl;
+
+    send_buf.buf = htobe64((uint64_t)(unsigned long)this->start_buf);
+    send_buf.rkey = htobe32(this->start_mr->rkey);
+    send_buf.size = htobe32(this->start_size);
+
+    sq_wr.opcode = IBV_WR_SEND_WITH_IMM;
+    sq_wr.imm_data = htobe32(1122);
+
+    struct ibv_send_wr *bad_send_wr;
+    ret = ibv_post_send(qp, &sq_wr, &bad_send_wr);
+    if(ret){
+        std::cout << "post send error" << std::endl;
+        exit(1);
+    }
+
+    while (state != SERVER_RDMA_ADDR_SEND_COMPLETE){}
+
 }
 
 
@@ -453,21 +472,13 @@ int main() {
 
     char *start_buf, *rdma_buf;
 
-//    std::vector<std::pair<int, int>> sketch_data;
-//    for (int i = 0; i < 100; i++){
-//        sketch_data.push_back(std::make_pair(i, i));
-//    }
-//    int sketch_data_size = sketch_data.size() * sizeof(std::pair<int, int>);
-
     start_buf = (char *)malloc(1000);
     rdma_buf = (char *)malloc(1000);
-
-//    memcpy(start_buf, &sketch_data[0], sketch_data_size);
 
 
     simple_server *server = new simple_server("10.0.0.2", 1245, start_buf, 1000, rdma_buf, 1000);
     server->start();
-    server->rdma_read();
+//    server->rdma_read();
 
 
     while (1){}

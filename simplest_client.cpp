@@ -23,6 +23,7 @@ enum ClientState{
     ROUTE_RESOLVED,
     ADDR_RESOLVED,
     CONNECTED,
+    GET_RDMA_ADDR,
 
 
 };
@@ -74,6 +75,10 @@ class simple_client{
     struct ibv_mr *rdma_mr;
 
     struct ibv_mr *start_mr;
+
+    uint32_t remote_rkey;		/* remote guys RKEY */
+    uint64_t remote_addr;		/* remote guys TO */
+    uint32_t remote_len;		/* remote guys LEN */
 
 
 };
@@ -206,6 +211,27 @@ void simple_client::cq_thread() {
                     break;
                 case IBV_WC_RECV:
                     std::cout << "recv complete" << std::endl;
+                    break;
+
+                case IBV_WC_RECV_RDMA_WITH_IMM:
+                    std::cout << "recv rdma with imm" << std::endl;;
+                    if(be32toh(wc.imm_data) == 1122){
+                        std::cout << "get imm_data: " << imm_data << std::endl;
+                        if(wc.byte_len != sizeof(recv_buf)){
+                            std::cout << "接受错误" << std::endl;
+                            exit(1);
+                        }
+
+                        remote_addr = be64toh(recv_buf.buf);
+                        remote_len = be32toh(recv_buf.size);
+                        remote_rkey = be32toh(recv_buf.rkey);
+
+                        std::cout << "接受到远程地址信息 addr: " << remote_addr << std::endl;
+                        std::cout << "接受到远程地址信息 len: " << remote_len << std::endl;
+                        std::cout << "接受到远程地址信息 rkey: " << remote_rkey << std::endl;
+                        state = GET_RDMA_ADDR;
+                        ibv_post_recv(qp, &rq_wr, NULL);
+                    }
                     break;
                 default:
                     break;
