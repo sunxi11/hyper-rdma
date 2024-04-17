@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="47.97.81.43" id="b810def2-f862-41a9-9979-5616d0b5f6fd" port="6002" customName="rdma88" nameFormat="CUSTOM" username="root" useOpenSSHConfig="true">
+        <option name="customName" value="rdma88" />
+      </sshConfig>
+      <sshConfig authType="PASSWORD" host="47.97.81.43" id="13d04c47-4b31-4736-9a04-af3e896d0298" port="6003" customName="rdma89" nameFormat="CUSTOM" username="root" useOpenSSHConfig="true">
+        <option name="customName" value="rdma89" />
+      </sshConfig>
+    </configs>
+  </component>
+</project>

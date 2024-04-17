@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="af9d6678-8f52-42de-88ce-77c6d1619f50" name="rdma89">
+        <fileTransfer accessType="SFTP" host="47.97.81.43" port="6003" sshConfigId="13d04c47-4b31-4736-9a04-af3e896d0298" sshConfig="rdma89">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="ed76b7c1-bdc5-4f94-81a0-86749ffefd5b" name="rdma88">
+        <fileTransfer accessType="SFTP" host="47.97.81.43" port="6002" sshConfigId="b810def2-f862-41a9-9979-5616d0b5f6fd" sshConfig="rdma88">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+    <groups>
+      <group>
+        <name>containers</name>
+        <servers>
+          <name value="rdma89" />
+          <name value="rdma88" />
+        </servers>
+      </group>
+    </groups>
+  </component>
+</project>

@@ -6,11 +6,13 @@
 #define HYPER_RDMA_RDMA_UTILS_H
 
 #include <iostream>
-#include "rdma_cma.h"
-#include "verbs.h"
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <cstdint>
+
+#include "rdma_cma.h"
+#include "verbs.h"
+#include "../DataStruct.h"
 
 #define SQ_DEPTH 16
 
@@ -27,6 +29,31 @@ enum ClientState{
     CONNECTED,
 };
 
+
+struct test_class_rdma_info{
+    struct ibv_send_wr test_class_wr;
+    struct ibv_sge *test_sgl;
+
+    struct ibv_mr *test_class_mr;
+    struct ibv_mr *class_buf_mr;
+    struct ibv_mr *class_send_mr;
+
+
+
+    struct rdma_info class_info;
+    struct rdma_info clas_buf_info;
+
+    char *class_recv_data;
+    char *class_recv_buf;
+    char *class_send_buf; //发送端把数据暂存在这里
+
+
+    uint32_t remote_rkey;		/* remote guys RKEY */
+    uint64_t remote_addr;		/* remote guys TO */
+    uint32_t remote_len;		/* remote guys LEN */
+};
+
+
 class simple_client{
 public:
     simple_client(const char *ip, int port, void *start_buf, int start_size, void *rdma_buf, int rdma_size);
@@ -39,6 +66,12 @@ public:
     void cq_thread();
     void setup_buffer();
     void recv_handler(struct ibv_wc &wc);
+    RdmaTest read_class();
+
+    bool GET_RDMA_ADDR = false;
+    bool RDMA_READ_COMPLETE = false;
+    bool RDMA_WRITE_COMPLETE = false;
+    bool GET_CLASS_ADDR = false;
 
 private:
     const char *ip;
@@ -49,9 +82,7 @@ private:
     char *rdma_buf;
     int rdma_size;
     enum ClientState state = INIT;
-    bool GET_RDMA_ADDR = false;
-    bool RDMA_READ_COMPLETE = false;
-    bool RDMA_WRITE_COMPLETE = false;
+
 
     struct rdma_event_channel *cm_channel;
     struct rdma_cm_id *cm_id;	/* connection on client side,*/
@@ -80,6 +111,8 @@ private:
     uint32_t remote_rkey;		/* remote guys RKEY */
     uint64_t remote_addr;		/* remote guys TO */
     uint32_t remote_len;		/* remote guys LEN */
+
+    struct test_class_rdma_info class_info;
 
 
 };
@@ -117,6 +150,7 @@ public:
     void cq_thread();
     void setup_buffer();
     void server_recv_handler(struct ibv_wc&);
+    void init_class_recv();
 
 
 private:
@@ -159,6 +193,11 @@ private:
     uint32_t remote_rkey;		/* remote guys RKEY */
     uint64_t remote_addr;		/* remote guys TO */
     uint32_t remote_len;		/* remote guys LEN */
+
+
+    struct test_class_rdma_info class_info;
+
+
 };
 
 

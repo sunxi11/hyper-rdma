@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/test.dir/DataStruct.cpp.o  -o test   -L/root/rdma-core-49.0/build/lib 

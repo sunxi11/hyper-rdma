@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/simple_server.dir/simplest_server.cpp.o CMakeFiles/simple_server.dir/DataStruct.cpp.o  -o simple_server   -L/root/rdma-core-49.0/build/lib  -Wl,-rpath,/root/rdma-core-49.0/build/lib -lrdmacm -libverbs librdmacm_tools.a -lpthread 

@@ -126,6 +126,16 @@ void simple_client::recv_handler(struct ibv_wc &wc){
                 std::cout << "接受到远程地址信息 rkey: " << remote_rkey << std::endl;
                 GET_RDMA_ADDR = true;
                 break;
+            case 1123:
+                class_info.remote_addr = be64toh(recv_buf.buf);
+                class_info.remote_len = be32toh(recv_buf.size);
+                class_info.remote_rkey = be32toh(recv_buf.rkey);
+
+                std::cout << "接收到class地址" << std::endl;
+                std::cout << "接受到远程地址信息 addr: " << class_info.remote_addr << std::endl;
+                std::cout << "接受到远程地址信息 len: " << class_info.remote_len << std::endl;
+                std::cout << "接受到远程地址信息 rkey: " << class_info.remote_rkey << std::endl;
+                GET_CLASS_ADDR = true;
             default:
                 break;
         }
@@ -292,6 +302,23 @@ void simple_client::setup_buffer() {
         exit(1);
     }
 
+    //注册接收自定义类的内存
+
+    class_info.class_recv_data = (char *)malloc(1000);
+    class_info.class_recv_buf = (char *)malloc(1000 * sizeof(uint32_t));
+
+    class_info.test_class_mr = ibv_reg_mr(pd, class_info.class_recv_data, 1000, IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_READ | IBV_ACCESS_REMOTE_WRITE);
+    if (!class_info.test_class_mr){
+        std::cerr << "ibv_reg_mr error" << std::endl;
+        exit(1);
+    }
+
+    class_info.class_buf_mr = ibv_reg_mr(pd, class_info.class_recv_buf,  1000 * sizeof(uint32_t), IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_READ | IBV_ACCESS_REMOTE_WRITE);
+    if (!class_info.class_buf_mr){
+        std::cerr << "ibv_reg_mr error" << std::endl;
+        exit(1);
+    }
+
 
     recv_sgl.addr = (uint64_t )(unsigned long) &this->recv_buf;
     recv_sgl.length = sizeof(struct rdma_info);
@@ -359,8 +386,8 @@ void simple_client::start() {
     memset(&init_attr, 0, sizeof(init_attr));
     init_attr.cap.max_send_wr = SQ_DEPTH;
     init_attr.cap.max_recv_wr = 2;
-    init_attr.cap.max_recv_sge = 1;
-    init_attr.cap.max_send_sge = 1;
+    init_attr.cap.max_recv_sge = 10;
+    init_attr.cap.max_send_sge = 10;
     init_attr.qp_type = IBV_QPT_RC;
     init_attr.send_cq = cq;
     init_attr.recv_cq = cq;
@@ -424,6 +451,51 @@ void simple_client::start() {
 }
 
 
+RdmaTest simple_client::read_class() {
+    int ret;
+    struct ibv_send_wr *bad_wr;
+    auto recv  =  new RdmaTest(0, 0, 0);
+
+    class_info.test_sgl = (struct ibv_sge *)malloc(2 * sizeof(struct ibv_sge));
+
+    RDMA_READ_COMPLETE = false;
+
+    class_info.test_class_wr.wr.rdma.remote_addr = class_info.remote_addr;
+    class_info.test_class_wr.wr.rdma.rkey = class_info.remote_rkey;
+    class_info.test_class_wr.opcode = IBV_WR_RDMA_READ;
+    class_info.test_class_wr.send_flags = IBV_SEND_SIGNALED;
+
+
+    class_info.test_sgl[0].addr = (uint64_t )(unsigned long) class_info.class_recv_data;
+    class_info.test_sgl[0].lkey = class_info.test_class_mr->lkey;
+    class_info.test_sgl[0].length = sizeof(RdmaTest);
+
+    class_info.test_sgl[1].addr = (uint64_t )(unsigned long) class_info.class_recv_buf;
+    class_info.test_sgl[1].lkey = class_info.class_buf_mr->lkey;
+    class_info.test_sgl[1].length = 100 * sizeof(uint32_t);
+
+    class_info.test_class_wr.num_sge = 2;
+    class_info.test_class_wr.sg_list = class_info.test_sgl;
+
+    ret = ibv_post_send(qp, &class_info.test_class_wr, &bad_wr);
+    if (ret){
+        std::cerr << "ibv_post_send error: " << strerror(errno) << std::endl;
+        exit(1);
+    }
+
+    while (RDMA_READ_COMPLETE == false){}
+    recv = (RdmaTest *)class_info.class_recv_data;
+    recv->data_buf = (uint32_t *)class_info.class_recv_buf;
+
+//    std::cout << "read class data: " << class_info.class_recv_data << std::endl;
+//    std::cout << "read buf data: " << class_info.class_recv_buf << std::endl;
+
+//    std::cout << "read class data: " << recv->size << " " << recv->a << " " << recv->b << std::endl;
+
+    return *recv;
+
+}
+
 
 int main(){
 //    char *start_buf = (char *)malloc(32);
@@ -442,14 +514,29 @@ int main(){
 //    memcpy(start_buf, &sketch_data[0], sketch_data_size);
 
     strcpy(start_buf, "hello world form client");
-    simple_client *client = new simple_client("10.0.0.2", 1245, start_buf, 1000, rdma_buf, 1000);
+    simple_client *client = new simple_client("10.0.0.20", 1245, start_buf, 1000, rdma_buf, 1000);
     client->start();
 
     client->rdma_read();
+//
+//    client->rdma_write();
+//
+//    client->rdma_read();
+    while (client->GET_CLASS_ADDR == false){}
+    for (int i = 0; i < 1000; ++i) {
+        RdmaTest data = client->read_class();
+        std::cout << "recv data: "<< data.size << " " << data.a << " " << data.b << std::endl;
+        std::cout << "data buf: ";
+        for (int j = 0; j < data.size; ++j) {
+            std::cout << data.data_buf[j] << " ";
+        }
+        std::cout << std::endl;
+    }
 
-    client->rdma_write();
+    RdmaTest data = client->read_class();
 
     client->rdma_read();
+
 
 
     while (1){}

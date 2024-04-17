@@ -9,17 +9,24 @@ add_library(rdmacm_tools STATIC
         common.c
 )
 
-# 指定rdma-core头文件和库文件的搜索路径
-set(RDMA_CORE_INCLUDE_DIR "/home/zju/rdma_benchmark/rdma-core-49.0/build/include")
-set(RDMA_CORE_LIBRARY_DIR "/home/zju/rdma_benchmark/rdma-core-49.0/build/lib")
+set(RDMA_CORE_INCLUDE_DIR "/root/rdma-core-49.0/build/include")
+set(RDMA_CORE_LIBRARY_DIR "/root/rdma-core-49.0/build/lib")
 
 include_directories(${RDMA_CORE_INCLUDE_DIR})
+
 link_directories(${RDMA_CORE_LIBRARY_DIR})
 
-add_executable(simple_client simplest_client.cpp )
+#add_executable(test DataStruct.cpp)
+
+
+add_executable(simple_client simplest_client.cpp
+        DataStruct.cpp
+        DataStruct.h)
 target_link_libraries(simple_client rdmacm ibverbs rdmacm_tools pthread)
 
-add_executable(simple_server simplest_server.cpp )
+add_executable(simple_server simplest_server.cpp
+        DataStruct.cpp
+        DataStruct.h)
 target_link_libraries(simple_server rdmacm ibverbs rdmacm_tools pthread)
 
 add_executable(ibinfo get_ibinfo.cpp)

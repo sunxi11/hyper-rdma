@@ -1,0 +1,96 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "hyper_rdma",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ibinfo::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ibinfo-Debug-29c3533c2022ff98f8a2.json",
+					"name" : "ibinfo",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rdmacm_tools::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rdmacm_tools-Debug-1972da6fb8e0513db3e0.json",
+					"name" : "rdmacm_tools",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "simple_client::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-simple_client-Debug-9c40cdbdf8ff5fda7307.json",
+					"name" : "simple_client",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "simple_server::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-simple_server-Debug-d419aa464c5dc95f2eca.json",
+					"name" : "simple_server",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test-Debug-046ca9f4b59e551fa0bf.json",
+					"name" : "test",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/sun/CLionProjects/rdma-project/cmake-build-debug",
+		"source" : "/Users/sun/CLionProjects/rdma-project"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 5
+	}
+}

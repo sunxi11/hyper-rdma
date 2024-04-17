@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="Always" serverName="containers" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false">
+    <option name="confirmBeforeUploading" value="false" />
+    <serverData>
+      <paths name="rdma88">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/root/rdma-project" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="rdma88 (8ddda0df-fc72-42bb-b933-ff52d72add5e)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/root/rdma-project" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-rdma88" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-rdma89" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="rdma89">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/root/rdma-project" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="rdma89 (7b3a4ee6-3a15-4017-9565-c3c0dba45545)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/root/rdma-project" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-rdma88" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-rdma89" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
+  </component>
+</project>

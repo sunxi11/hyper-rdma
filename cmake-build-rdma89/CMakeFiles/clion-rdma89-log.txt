@@ -1,0 +1,4 @@
+/usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" -S /root/rdma-project -B /root/rdma-project/cmake-build-rdma89
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /root/rdma-project/cmake-build-rdma89

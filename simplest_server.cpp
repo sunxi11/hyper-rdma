@@ -1,4 +1,3 @@
-#include "include/rdma-utils.h"
 #include <infiniband/verbs.h>
 #include <rdma/rdma_cma.h>
 #include <sys/socket.h>
@@ -8,11 +7,14 @@
 #include <netdb.h>
 #include <thread>
 #include <endian.h>
-#include "include/common.h"
 #include <thread>
 #include <time.h>
 #include <vector>
 #include <algorithm>
+
+#include "include/common.h"
+#include "include/rdma-utils.h"
+#include "DataStruct.h"
 
 #define SQ_DEPTH 16
 
@@ -51,6 +53,12 @@ void simple_server::setup_buffer() {
         exit(1);
     }
 
+    class_info.class_send_buf = (char *)malloc(sizeof(RdmaTest) + 5000 * sizeof(uint32_t));
+    class_info.class_send_mr = ibv_reg_mr(pd, class_info.class_send_buf, sizeof(RdmaTest) + 5000 * sizeof(uint32_t), IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_READ | IBV_ACCESS_REMOTE_WRITE);
+    if (!class_info.class_send_mr){
+        std::cerr << "ibv_reg_mr error" << std::endl;
+        exit(1);
+    }
 
     recv_sgl.addr = (uint64_t )(unsigned long) &this->recv_buf;
     recv_sgl.length = sizeof(struct rdma_info);
@@ -215,18 +223,8 @@ void simple_server::cm_thread(){
         id = event->id;
         switch (event->event) {
             case RDMA_CM_EVENT_ADDR_RESOLVED:
-//                ret = rdma_resolve_route(id, 2000);
-//                if (ret){
-//                    std::cerr << "rdma_resolve_route error: " << strerror(errno) << std::endl;
-//                    exit(1);
-//                }
-//                state = ADDR_RESOLVED;
                 break;
             case RDMA_CM_EVENT_ROUTE_RESOLVED:
-//                if (state != ADDR_RESOLVED){
-//                    std::cout << "error" << std::endl;
-//                }
-//                state = ROUTE_RESOLVED;
                 break;
             case RDMA_CM_EVENT_CONNECT_REQUEST:
                 std::cout << "服务端接收到连接请求" << std::endl;
@@ -405,6 +403,52 @@ void simple_server::start() {
 
     while (state != SERVER_RDMA_ADDR_SEND_COMPLETE){}
 
+    init_class_recv();
+
+
+}
+
+void simple_server::init_class_recv() {
+    //注册内存，初始化地址
+
+    int ret;
+    struct ibv_send_wr *bad_send_wr;
+//    class_info.test_class_mr = ibv_reg_mr(pd, &a, sizeof(a), IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_READ | IBV_ACCESS_REMOTE_WRITE);
+//    if (!class_info.test_class_mr){
+//        std::cerr << "ibv_reg_mr error" << std::endl;
+//        exit(1);
+//    }
+//
+//    class_info.class_buf_mr = ibv_reg_mr(pd, a.data_buf, a.size * sizeof(uint32_t), IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_READ | IBV_ACCESS_REMOTE_WRITE);
+//    if (!class_info.class_buf_mr){
+//        std::cerr << "ibv_reg_mr error" << std::endl;
+//        exit(1);
+//    }
+//    发送类数据的地址
+    send_buf.buf = htobe64((uint64_t)(unsigned long)class_info.class_send_buf);
+    send_buf.rkey = htobe32(class_info.class_send_mr->rkey);
+    send_buf.size = htobe32(sizeof(RdmaTest));
+    sq_wr.imm_data = htobe32(1123);
+    ret = ibv_post_send(qp, &sq_wr, &bad_send_wr);
+    if(ret){
+        std::cout << "post send error" << std::endl;
+        exit(1);
+    }
+
+    //把这些数据放到 start_buf 里面
+    memcpy(class_info.class_send_buf, &a, sizeof(RdmaTest));
+    memcpy(class_info.class_send_buf + sizeof(RdmaTest), a.data_buf, a.size * sizeof(uint32_t));
+
+    std::cout << "size = " << ((RdmaTest *)class_info.class_send_buf)->size << std::endl;
+    std::cout << "a = " << ((RdmaTest *)class_info.class_send_buf)->a << std::endl;
+    std::cout << "b = " << ((RdmaTest *)class_info.class_send_buf)->b << std::endl;
+
+
+
+//    for (int i = 0; i < 1000; ++i) {
+//        start_buf[i] = 'a';
+//    }
+
 
 }
 
@@ -421,9 +465,12 @@ int main() {
     strcpy(start_buf, "hello world form server");
 
 
-    simple_server *server = new simple_server("10.0.0.2", 1245, start_buf, 1000, rdma_buf, 1000);
+    simple_server *server = new simple_server("10.0.0.20", 1245, start_buf, 1000, rdma_buf, 1000);
     server->start();
+//    server->init_class_recv();
 //    server->rdma_read();
+
+//TODO 服务器端实现同时处理多个连接
 
 
 
