@@ -80,6 +80,10 @@ sys/select.h
 sys/mman.h
 -
 
+/root/rdma-project/DataStruct.h
+cstdint
+-
+
 /root/rdma-project/include/common.h
 stdlib.h
 -
@@ -99,16 +103,18 @@ infiniband/ib.h
 /root/rdma-project/include/rdma-utils.h
 iostream
 -
-rdma_cma.h
-/root/rdma-project/include/rdma_cma.h
-verbs.h
-/root/rdma-project/include/verbs.h
 sys/socket.h
 -
 arpa/inet.h
 -
 cstdint
 -
+rdma_cma.h
+/root/rdma-project/include/rdma_cma.h
+verbs.h
+/root/rdma-project/include/verbs.h
+../DataStruct.h
+/root/rdma-project/DataStruct.h
 
 /root/rdma-project/include/rdma_cma.h
 netinet/in.h

@@ -130,19 +130,6 @@ rdmacm_tools/fast:
 .PHONY : rdmacm_tools/fast
 
 #=============================================================================
-# Target rules for targets named test
-
-# Build rule for target.
-test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test
-.PHONY : test
-
-# fast build rule for target.
-test/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
-.PHONY : test/fast
-
-#=============================================================================
 # Target rules for targets named simple_client
 
 # Build rule for target.
@@ -186,7 +173,6 @@ DataStruct.o: DataStruct.cpp.o
 
 # target to build an object file
 DataStruct.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/DataStruct.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simple_client.dir/build.make CMakeFiles/simple_client.dir/DataStruct.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simple_server.dir/build.make CMakeFiles/simple_server.dir/DataStruct.cpp.o
 .PHONY : DataStruct.cpp.o
@@ -196,7 +182,6 @@ DataStruct.i: DataStruct.cpp.i
 
 # target to preprocess a source file
 DataStruct.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/DataStruct.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simple_client.dir/build.make CMakeFiles/simple_client.dir/DataStruct.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simple_server.dir/build.make CMakeFiles/simple_server.dir/DataStruct.cpp.i
 .PHONY : DataStruct.cpp.i
@@ -206,7 +191,6 @@ DataStruct.s: DataStruct.cpp.s
 
 # target to generate assembly for a file
 DataStruct.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/DataStruct.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simple_client.dir/build.make CMakeFiles/simple_client.dir/DataStruct.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simple_server.dir/build.make CMakeFiles/simple_server.dir/DataStruct.cpp.s
 .PHONY : DataStruct.cpp.s
@@ -319,7 +303,6 @@ help:
 	@echo "... rdmacm_tools"
 	@echo "... simple_client"
 	@echo "... simple_server"
-	@echo "... test"
 	@echo "... DataStruct.o"
 	@echo "... DataStruct.i"
 	@echo "... DataStruct.s"

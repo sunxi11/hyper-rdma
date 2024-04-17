@@ -51,7 +51,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/rdmacm_tools.dir/DependInfo.cmake"
-  "CMakeFiles/test.dir/DependInfo.cmake"
   "CMakeFiles/simple_client.dir/DependInfo.cmake"
   "CMakeFiles/simple_server.dir/DependInfo.cmake"
   "CMakeFiles/ibinfo.dir/DependInfo.cmake"

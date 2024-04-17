@@ -1,7 +1,6 @@
 /root/rdma-project/cmake-build-rdma89/CMakeFiles/rebuild_cache.dir
+/root/rdma-project/cmake-build-rdma89/CMakeFiles/edit_cache.dir
 /root/rdma-project/cmake-build-rdma89/CMakeFiles/ibinfo.dir
 /root/rdma-project/cmake-build-rdma89/CMakeFiles/simple_server.dir
 /root/rdma-project/cmake-build-rdma89/CMakeFiles/simple_client.dir
-/root/rdma-project/cmake-build-rdma89/CMakeFiles/edit_cache.dir
-/root/rdma-project/cmake-build-rdma89/CMakeFiles/test.dir
 /root/rdma-project/cmake-build-rdma89/CMakeFiles/rdmacm_tools.dir

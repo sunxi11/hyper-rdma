@@ -18,8 +18,7 @@
 						0,
 						1,
 						2,
-						3,
-						4
+						3
 					]
 				}
 			],
@@ -37,8 +36,7 @@
 						0,
 						1,
 						2,
-						3,
-						4
+						3
 					]
 				}
 			],
@@ -70,13 +68,6 @@
 					"id" : "simple_server::@6890427a1f51a3e7e1df",
 					"jsonFile" : "target-simple_server-Debug-d419aa464c5dc95f2eca.json",
 					"name" : "simple_server",
-					"projectIndex" : 0
-				},
-				{
-					"directoryIndex" : 0,
-					"id" : "test::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-test-Debug-046ca9f4b59e551fa0bf.json",
-					"name" : "test",
 					"projectIndex" : 0
 				}
 			]

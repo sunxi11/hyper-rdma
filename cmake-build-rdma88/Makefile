@@ -150,19 +150,6 @@ simple_client/fast:
 .PHONY : simple_client/fast
 
 #=============================================================================
-# Target rules for targets named test
-
-# Build rule for target.
-test: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 test
-.PHONY : test
-
-# fast build rule for target.
-test/fast:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
-.PHONY : test/fast
-
-#=============================================================================
 # Target rules for targets named rdmacm_tools
 
 # Build rule for target.
@@ -183,7 +170,6 @@ DataStruct.o: DataStruct.cpp.o
 DataStruct.cpp.o:
 	$(MAKE) -f CMakeFiles/simple_server.dir/build.make CMakeFiles/simple_server.dir/DataStruct.cpp.o
 	$(MAKE) -f CMakeFiles/simple_client.dir/build.make CMakeFiles/simple_client.dir/DataStruct.cpp.o
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/DataStruct.cpp.o
 .PHONY : DataStruct.cpp.o
 
 DataStruct.i: DataStruct.cpp.i
@@ -194,7 +180,6 @@ DataStruct.i: DataStruct.cpp.i
 DataStruct.cpp.i:
 	$(MAKE) -f CMakeFiles/simple_server.dir/build.make CMakeFiles/simple_server.dir/DataStruct.cpp.i
 	$(MAKE) -f CMakeFiles/simple_client.dir/build.make CMakeFiles/simple_client.dir/DataStruct.cpp.i
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/DataStruct.cpp.i
 .PHONY : DataStruct.cpp.i
 
 DataStruct.s: DataStruct.cpp.s
@@ -205,7 +190,6 @@ DataStruct.s: DataStruct.cpp.s
 DataStruct.cpp.s:
 	$(MAKE) -f CMakeFiles/simple_server.dir/build.make CMakeFiles/simple_server.dir/DataStruct.cpp.s
 	$(MAKE) -f CMakeFiles/simple_client.dir/build.make CMakeFiles/simple_client.dir/DataStruct.cpp.s
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/DataStruct.cpp.s
 .PHONY : DataStruct.cpp.s
 
 common.o: common.c.o
@@ -323,11 +307,10 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
+	@echo "... edit_cache"
 	@echo "... ibinfo"
 	@echo "... simple_server"
 	@echo "... simple_client"
-	@echo "... edit_cache"
-	@echo "... test"
 	@echo "... rdmacm_tools"
 	@echo "... DataStruct.o"
 	@echo "... DataStruct.i"

@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/root/rdma-project/DataStruct.cpp
+cstdint
+-
+iostream
+-
+DataStruct.h
+/root/rdma-project/DataStruct.h
+
+/root/rdma-project/DataStruct.h
+cstdint
+-
+

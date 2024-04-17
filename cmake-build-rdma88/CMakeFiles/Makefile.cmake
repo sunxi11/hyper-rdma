@@ -48,6 +48,5 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/ibinfo.dir/DependInfo.cmake"
   "CMakeFiles/simple_server.dir/DependInfo.cmake"
   "CMakeFiles/simple_client.dir/DependInfo.cmake"
-  "CMakeFiles/test.dir/DependInfo.cmake"
   "CMakeFiles/rdmacm_tools.dir/DependInfo.cmake"
   )

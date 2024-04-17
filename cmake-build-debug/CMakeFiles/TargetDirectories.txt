@@ -1,5 +1,4 @@
 /Users/sun/CLionProjects/rdma-project/cmake-build-debug/CMakeFiles/rdmacm_tools.dir
-/Users/sun/CLionProjects/rdma-project/cmake-build-debug/CMakeFiles/test.dir
 /Users/sun/CLionProjects/rdma-project/cmake-build-debug/CMakeFiles/simple_client.dir
 /Users/sun/CLionProjects/rdma-project/cmake-build-debug/CMakeFiles/simple_server.dir
 /Users/sun/CLionProjects/rdma-project/cmake-build-debug/CMakeFiles/ibinfo.dir
