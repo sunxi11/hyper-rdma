@@ -40,7 +40,7 @@ struct sketch_rdma_info{
     struct ibv_sge *sketch_seg;
 
     sketch_rdma_info(){
-        data_size = 100;
+        data_size = 1000;
         data_buf = (char *) malloc(data_size * sizeof(int)); //10Mb
         sketch_seg = (struct ibv_sge *) malloc(sizeof(struct ibv_sge));
 

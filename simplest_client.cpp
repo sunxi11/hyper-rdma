@@ -250,7 +250,6 @@ void simple_client::rdma_read() {
         std::cerr << "ibv_post_send error: " << strerror(errno) << std::endl;
         exit(1);
     }
-
     pendingReads++;
 
     while (pendingReads > 0){}
@@ -532,7 +531,14 @@ void simple_client::ow_read() {
     int ret = 0;
     struct ibv_send_wr *bad_wr;
     int data_index = 0;
+
     pendingReads = 0;
+
+//    if(pendingReads != 0){
+//        std::cout << "pendingReads: " << pendingReads << std::endl;
+//        return;
+//    }
+//    pendingReads = 0;
 
     ////DTA
 //    auto base_addr = (uint64_t)(uintptr_t)sketch_info.data_buf;
@@ -580,7 +586,7 @@ void simple_client::ow_read() {
 
         pendingReads++;
 
-//        while (RDMA_READ_COMPLETE == false){}
+        while (RDMA_READ_COMPLETE == false){}
         std::this_thread::sleep_for(std::chrono::microseconds(5));
     }
 
@@ -623,6 +629,9 @@ int main(){
     }
     std::cout << std::endl;
     client->rdma_read();
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
 
     for(int i = 0; i < 10; i++){
         client->ow_read();
