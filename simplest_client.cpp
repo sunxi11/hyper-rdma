@@ -15,8 +15,13 @@
 #include <thread>
 #include <vector>
 #include <algorithm>
+#include <thread>
+#include <chrono>
+#include <atomic>
 
 #define SQ_DEPTH 16
+
+std::atomic<int> pendingReads{0};
 
 
 
@@ -136,6 +141,19 @@ void simple_client::recv_handler(struct ibv_wc &wc){
                 std::cout << "接受到远程地址信息 len: " << class_info.remote_len << std::endl;
                 std::cout << "接受到远程地址信息 rkey: " << class_info.remote_rkey << std::endl;
                 GET_CLASS_ADDR = true;
+                break;
+
+            case 1124:
+                sketch_info.remote_addr = be64toh(recv_buf.buf);
+                sketch_info.remote_len = be32toh(recv_buf.size);
+                sketch_info.remote_rkey = be32toh(recv_buf.rkey);
+
+                std::cout << "接收到sketch地址" << std::endl;
+                std::cout << "接受到远程地址信息 addr: " << sketch_info.remote_addr << std::endl;
+                std::cout << "接受到远程地址信息 len: " << sketch_info.remote_len << std::endl;
+                std::cout << "接受到远程地址信息 rkey: " << sketch_info.remote_rkey << std::endl;
+                GET_SKETCH_ADDR = true;
+                break;
             default:
                 break;
         }
@@ -182,8 +200,9 @@ void simple_client::cq_thread() {
                     std::cout << "recv rdma with imm" << std::endl;;
                     break;
                 case IBV_WC_RDMA_READ:
-                    std::cout << "rdma read complete" << std::endl;
+//                    std::cout << "rdma read complete" << std::endl;
                     RDMA_READ_COMPLETE = true;
+                    pendingReads--;
 //                    std::cout << "read data: " << rdma_buf << std::endl;
                     break;
                 case IBV_WC_RDMA_WRITE:
@@ -232,7 +251,9 @@ void simple_client::rdma_read() {
         exit(1);
     }
 
-    while (RDMA_READ_COMPLETE == false){}
+    pendingReads++;
+
+    while (pendingReads > 0){}
 
     std::cout << "read data: " << rdma_buf << std::endl;
 }
@@ -315,6 +336,15 @@ void simple_client::setup_buffer() {
 
     class_info.class_buf_mr = ibv_reg_mr(pd, class_info.class_recv_buf,  1000 * sizeof(uint32_t), IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_READ | IBV_ACCESS_REMOTE_WRITE);
     if (!class_info.class_buf_mr){
+        std::cerr << "ibv_reg_mr error" << std::endl;
+        exit(1);
+    }
+
+    sketch_info.sketch_mr = ibv_reg_mr(pd, sketch_info.data_buf, sketch_info.data_size * sizeof(int),
+                                       IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_READ | IBV_ACCESS_REMOTE_WRITE
+                                       );
+
+    if (!sketch_info.sketch_mr){
         std::cerr << "ibv_reg_mr error" << std::endl;
         exit(1);
     }
@@ -483,7 +513,9 @@ RdmaTest simple_client::read_class() {
         exit(1);
     }
 
-    while (RDMA_READ_COMPLETE == false){}
+    pendingReads++;
+
+    while (pendingReads > 0){}
     recv = (RdmaTest *)class_info.class_recv_data;
     recv->data_buf = (uint32_t *)class_info.class_recv_buf;
 
@@ -496,17 +528,80 @@ RdmaTest simple_client::read_class() {
 
 }
 
+void simple_client::ow_read() {
+    int ret = 0;
+    struct ibv_send_wr *bad_wr;
+    int data_index = 0;
+    pendingReads = 0;
+
+    ////DTA
+//    auto base_addr = (uint64_t)(uintptr_t)sketch_info.data_buf;
+
+//    RDMA_READ_COMPLETE = false;
+//    sketch_info.sketch_wr.wr.rdma.remote_addr = sketch_info.remote_addr;
+//    sketch_info.sketch_wr.wr.rdma.rkey = sketch_info.remote_rkey;
+//    sketch_info.sketch_wr.opcode = IBV_WR_RDMA_READ;
+//    sketch_info.sketch_wr.send_flags = IBV_SEND_SIGNALED;
+//
+//    sketch_info.sketch_seg->addr = base_addr;
+//    sketch_info.sketch_seg->lkey = sketch_info.sketch_mr->lkey;
+//    sketch_info.sketch_seg->length =  sketch_info.data_size * sizeof(int);
+//
+//    sketch_info.sketch_wr.num_sge = 1;
+//    sketch_info.sketch_wr.sg_list = sketch_info.sketch_seg;
+//
+//    ret = ibv_post_send(qp, &sketch_info.sketch_wr, &bad_wr);
+//    if (ret){
+//        std::cerr << "ibv_post_send error: " << strerror(errno) << std::endl;
+//        exit(1);
+//    }
+//    while (RDMA_READ_COMPLETE == false){}
+
+
+    for(int i = 0; i < sketch_info.data_size; i++){
+        RDMA_READ_COMPLETE = false;
+        sketch_info.sketch_wr.wr.rdma.remote_addr = sketch_info.remote_addr + i * sizeof(int);
+        sketch_info.sketch_wr.wr.rdma.rkey = sketch_info.remote_rkey;
+        sketch_info.sketch_wr.opcode = IBV_WR_RDMA_READ;
+        sketch_info.sketch_wr.send_flags = IBV_SEND_SIGNALED;
+
+        sketch_info.sketch_seg->addr = (uint64_t)(uintptr_t)sketch_info.data_buf + i * sizeof(int);
+        sketch_info.sketch_seg->lkey = sketch_info.sketch_mr->lkey;
+        sketch_info.sketch_seg->length = sizeof(int);
+
+        sketch_info.sketch_wr.num_sge = 1;
+        sketch_info.sketch_wr.sg_list = sketch_info.sketch_seg;
+
+        ret = ibv_post_send(qp, &sketch_info.sketch_wr, &bad_wr);
+        if (ret){
+            std::cerr << "ibv_post_send error: " << strerror(errno) << std::endl;
+            exit(1);
+        }
+
+        pendingReads++;
+
+//        while (RDMA_READ_COMPLETE == false){}
+        std::this_thread::sleep_for(std::chrono::microseconds(5));
+    }
+
+    std::cout << "num pendingread: "<< pendingReads << std::endl;
+
+    while (pendingReads > 0){
+    }
+
+    int *int_data = (int *)sketch_info.data_buf;
+    for(int i = 0;i < sketch_info.data_size; i++){
+        std::cout << int_data[i] << " ";
+    }
+    std::cout << std::endl;
+
+
+}
+
 
 int main(){
-//    char *start_buf = (char *)malloc(32);
-//    char *rdma_buf = (char *)malloc(32);
-
     char *start_buf, *rdma_buf;
 
-//    for (int i = 0; i < 100; i++){
-//        sketch_data.push_back(std::make_pair(i, i));
-//    }
-//    int sketch_data_size = sketch_data.size() * sizeof(std::pair<int, int>);
 
     start_buf = (char *)malloc(1000);
     rdma_buf = (char *)malloc(1000);
@@ -516,26 +611,22 @@ int main(){
     strcpy(start_buf, "hello world form client");
     simple_client *client = new simple_client("10.0.0.20", 1245, start_buf, 1000, rdma_buf, 1000);
     client->start();
-
     client->rdma_read();
-//
-//    client->rdma_write();
-//
-//    client->rdma_read();
+
     while (client->GET_CLASS_ADDR == false){}
-    for (int i = 0; i < 1000; ++i) {
-        RdmaTest data = client->read_class();
-        std::cout << "recv data: "<< data.size << " " << data.a << " " << data.b << std::endl;
-        std::cout << "data buf: ";
-        for (int j = 0; j < data.size; ++j) {
-            std::cout << data.data_buf[j] << " ";
-        }
-        std::cout << std::endl;
-    }
 
     RdmaTest data = client->read_class();
-
+    std::cout << "recv data: "<< data.size << " " << data.a << " " << data.b << std::endl;
+    std::cout << "data buf: ";
+    for (int j = 0; j < data.size; ++j) {
+        std::cout << data.data_buf[j] << " ";
+    }
+    std::cout << std::endl;
     client->rdma_read();
+
+    for(int i = 0; i < 10; i++){
+        client->ow_read();
+    }
 
 
 

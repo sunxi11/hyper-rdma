@@ -10,7 +10,9 @@
 #include <thread>
 #include <time.h>
 #include <vector>
+#include <chrono>
 #include <algorithm>
+
 
 #include "include/common.h"
 #include "include/rdma-utils.h"
@@ -60,6 +62,15 @@ void simple_server::setup_buffer() {
         exit(1);
     }
 
+//    sketch_info.data_buf = (char *)malloc(sketch_info.data_size * sizeof(int));
+    sketch_info.sketch_mr = ibv_reg_mr(pd, sketch_info.data_buf, sketch_info.data_size * sizeof(int),
+                                       IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_READ | IBV_ACCESS_REMOTE_WRITE
+    );
+    if (!sketch_info.sketch_mr){
+        std::cerr << "sketch mr :ibv_reg_mr error" << std::endl;
+        exit(1);
+    }
+
     recv_sgl.addr = (uint64_t )(unsigned long) &this->recv_buf;
     recv_sgl.length = sizeof(struct rdma_info);
     recv_sgl.lkey = this->recv_mr->lkey;
@@ -73,7 +84,7 @@ void simple_server::setup_buffer() {
     sq_wr.num_sge = 1;
     sq_wr.sg_list = &this->send_sgl;
     sq_wr.send_flags = IBV_SEND_SIGNALED;
-    sq_wr.opcode = IBV_WR_SEND;
+    sq_wr.opcode = IBV_WR_SEND_WITH_IMM;
 
 
     rdma_sgl.addr = (uint64_t )(unsigned long) this->rdma_buf;
@@ -107,28 +118,40 @@ void simple_server::cq_thread() {
 
         struct ibv_wc wc;
         //接受的一个wc的列表（指针）wc[0] 是第一个
-        while ((ret = ibv_poll_cq(cq, 1, &wc)) == 1){
-            ret = 0;
-            switch (wc.opcode) {
-                case IBV_WC_RECV:
-                    std::cout << "rdma recv success" << std::endl;
-                    server_recv_handler(wc);
-                    break;
-                case IBV_WC_SEND:
-                    std::cout << "rdma send success" << std::endl;
-                    state = SERVER_RDMA_ADDR_SEND_COMPLETE;
-                    break;
-                case IBV_WC_RDMA_READ:
-                    std::cout << "rdma read success" << std::endl;
-//                    memcpy(&sketch_data[0], rdma_buf, remote_len);
-//                    for (int i = 0; i < (remote_len / sizeof(std::pair<int, int>)); i++){
-//                        std::cout << sketch_data[i].first << " " << sketch_data[i].second << std::endl;
-//                    }
-                    std::cout << "read data: " << rdma_buf << std::endl;
-                    break;
-                default:
-                    break;
+        while (true){
+            ret = ibv_poll_cq(cq, 1, &wc);
+            if(ret > 0){
+                uint32_t wr_id = 0;
+                switch (wc.opcode) {
+                    case IBV_WC_RECV:
+                        std::cout << "rdma recv success" << std::endl;
+                        server_recv_handler(wc);
+                        break;
+                    case IBV_WC_SEND:
+                        wr_id = wc.wr_id;
+//                        imm = be32toh(wc.imm_data);
 
+                        if(wr_id == 0){
+                            std::cout << "send success" << std::endl;
+                            rdma_addr_send_complete = true;
+                        }else if(wr_id == 1123){
+                            std::cout << "class send success" << std::endl;
+                            class_addr_send_complete = true;
+                        }else if(wr_id == 1124){
+                            std::cout << "sketch send success" << std::endl;
+                            sketch_addr_send_complete = true;
+                        }
+                        break;
+                    case IBV_WC_RDMA_READ:
+                        std::cout << "rdma read success" << std::endl;
+                        std::cout << "read data: " << rdma_buf << std::endl;
+                        break;
+                    default:
+                        break;
+
+                }
+            } else{
+                break;
             }
         }
         ibv_ack_cq_events(cq, 1);
@@ -392,6 +415,7 @@ void simple_server::start() {
     send_buf.size = htobe32(this->start_size);
 
     sq_wr.opcode = IBV_WR_SEND_WITH_IMM;
+    sq_wr.send_flags = IBV_SEND_SIGNALED;
     sq_wr.imm_data = htobe32(1122);
 
     struct ibv_send_wr *bad_send_wr;
@@ -401,55 +425,71 @@ void simple_server::start() {
         exit(1);
     }
 
-    while (state != SERVER_RDMA_ADDR_SEND_COMPLETE){}
-
+    while (rdma_addr_send_complete == false){}
     init_class_recv();
-
+    while (class_addr_send_complete == false){}
+    init_sketch_rdma();
+    while (sketch_addr_send_complete == false){}
 
 }
 
-void simple_server::init_class_recv() {
-    //注册内存，初始化地址
-
+void simple_server::init_sketch_rdma() {
     int ret;
-    struct ibv_send_wr *bad_send_wr;
-//    class_info.test_class_mr = ibv_reg_mr(pd, &a, sizeof(a), IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_READ | IBV_ACCESS_REMOTE_WRITE);
-//    if (!class_info.test_class_mr){
-//        std::cerr << "ibv_reg_mr error" << std::endl;
-//        exit(1);
-//    }
-//
-//    class_info.class_buf_mr = ibv_reg_mr(pd, a.data_buf, a.size * sizeof(uint32_t), IBV_ACCESS_LOCAL_WRITE | IBV_ACCESS_REMOTE_READ | IBV_ACCESS_REMOTE_WRITE);
-//    if (!class_info.class_buf_mr){
-//        std::cerr << "ibv_reg_mr error" << std::endl;
-//        exit(1);
-//    }
-//    发送类数据的地址
+    struct ibv_send_wr wr, *bad_send_wr;
+    memset(&wr, 0, sizeof(wr));
+
+    send_buf.buf = htobe64((uint64_t)(uintptr_t)sketch_info.data_buf);
+    send_buf.size = htobe32(sketch_info.data_size);
+    send_buf.rkey = htobe32(sketch_info.sketch_mr->rkey);
+
+    wr.opcode = IBV_WR_SEND_WITH_IMM;
+    wr.send_flags = IBV_SEND_SIGNALED;
+    wr.imm_data = htobe32(1124);
+    wr.wr_id = 1124;
+    wr.sg_list = &send_sgl;
+    wr.num_sge = 1;
+
+    int *data = (int *)sketch_info.data_buf;
+    for (int i = 0; i < sketch_info.data_size; i++){
+        data[i] = i;
+    }
+
+
+    ret = ibv_post_send(qp, &wr, &bad_send_wr);
+    if (ret) {
+        std::cout << "post send error" << std::endl;
+        exit(1);
+    }
+}
+
+void simple_server::init_class_recv() {
+    int ret;
+    struct ibv_send_wr wr, *bad_send_wr;
+    memset(&wr, 0, sizeof(wr));
+
     send_buf.buf = htobe64((uint64_t)(unsigned long)class_info.class_send_buf);
     send_buf.rkey = htobe32(class_info.class_send_mr->rkey);
     send_buf.size = htobe32(sizeof(RdmaTest));
-    sq_wr.imm_data = htobe32(1123);
-    ret = ibv_post_send(qp, &sq_wr, &bad_send_wr);
-    if(ret){
+
+    wr.opcode = IBV_WR_SEND_WITH_IMM;
+    wr.send_flags = IBV_SEND_SIGNALED;
+    wr.imm_data = htobe32(1123);
+    wr.wr_id = 1123;
+    wr.sg_list = &send_sgl;
+    wr.num_sge = 1;
+
+    ret = ibv_post_send(qp, &wr, &bad_send_wr);
+    if (ret) {
         std::cout << "post send error" << std::endl;
         exit(1);
     }
 
-    //把这些数据放到 start_buf 里面
     memcpy(class_info.class_send_buf, &a, sizeof(RdmaTest));
     memcpy(class_info.class_send_buf + sizeof(RdmaTest), a.data_buf, a.size * sizeof(uint32_t));
 
     std::cout << "size = " << ((RdmaTest *)class_info.class_send_buf)->size << std::endl;
     std::cout << "a = " << ((RdmaTest *)class_info.class_send_buf)->a << std::endl;
     std::cout << "b = " << ((RdmaTest *)class_info.class_send_buf)->b << std::endl;
-
-
-
-//    for (int i = 0; i < 1000; ++i) {
-//        start_buf[i] = 'a';
-//    }
-
-
 }
 
 

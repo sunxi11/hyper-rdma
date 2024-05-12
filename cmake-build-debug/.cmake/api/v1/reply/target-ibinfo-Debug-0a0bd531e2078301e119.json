@@ -129,6 +129,11 @@
 				"backtrace" : 3,
 				"fragment" : "-lpthread",
 				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "-lrt",
+				"role" : "libraries"
 			}
 		],
 		"language" : "CXX"

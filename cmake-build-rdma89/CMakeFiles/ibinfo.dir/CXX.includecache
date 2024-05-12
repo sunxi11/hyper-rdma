@@ -93,8 +93,20 @@ arpa/inet.h
 -
 netdb.h
 -
+cstdlib
+-
+unistd.h
+-
 include/common.h
 /root/rdma-project/include/common.h
+sys/mman.h
+-
+fcntl.h
+-
+sys/stat.h
+-
+unistd.h
+-
 
 /root/rdma-project/include/common.h
 stdlib.h

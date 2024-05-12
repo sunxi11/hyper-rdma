@@ -11,30 +11,30 @@
 				<Option working_dir="/root/rdma-project/cmake-build-rdma88"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
 				<Option working_dir="/root/rdma-project/cmake-build-rdma88"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
 				<Option working_dir="/root/rdma-project/cmake-build-rdma88"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="ibinfo">
@@ -45,12 +45,19 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/root/rdma-core-49.0/build/include"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 ibinfo"/>
-					<CompileFile command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 ibinfo"/>
+					<CompileFile command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="ibinfo/fast">
@@ -61,12 +68,19 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/root/rdma-core-49.0/build/include"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 ibinfo/fast"/>
-					<CompileFile command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 ibinfo/fast"/>
+					<CompileFile command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="simple_server">
@@ -77,12 +91,19 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/root/rdma-core-49.0/build/include"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 simple_server"/>
-					<CompileFile command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 simple_server"/>
+					<CompileFile command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="simple_server/fast">
@@ -93,12 +114,19 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/root/rdma-core-49.0/build/include"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 simple_server/fast"/>
-					<CompileFile command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 simple_server/fast"/>
+					<CompileFile command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="simple_client">
@@ -109,12 +137,19 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/root/rdma-core-49.0/build/include"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 simple_client"/>
-					<CompileFile command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 simple_client"/>
+					<CompileFile command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="simple_client/fast">
@@ -125,12 +160,19 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/root/rdma-core-49.0/build/include"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 simple_client/fast"/>
-					<CompileFile command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 simple_client/fast"/>
+					<CompileFile command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rdmacm_tools">
@@ -141,12 +183,19 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/root/rdma-core-49.0/build/include"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 rdmacm_tools"/>
-					<CompileFile command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 rdmacm_tools"/>
+					<CompileFile command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rdmacm_tools/fast">
@@ -157,12 +206,19 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/root/rdma-core-49.0/build/include"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 rdmacm_tools/fast"/>
-					<CompileFile command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 rdmacm_tools/fast"/>
+					<CompileFile command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j40 -f &quot;/root/rdma-project/cmake-build-rdma88/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>

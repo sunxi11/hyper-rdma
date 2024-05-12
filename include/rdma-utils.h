@@ -30,6 +30,29 @@ enum ClientState{
 };
 
 
+struct sketch_rdma_info{
+    char *data_buf;
+    int data_size; //10M
+
+
+    struct ibv_send_wr sketch_wr;
+    struct ibv_mr *sketch_mr;
+    struct ibv_sge *sketch_seg;
+
+    sketch_rdma_info(){
+        data_size = 100;
+        data_buf = (char *) malloc(data_size * sizeof(int)); //10Mb
+        sketch_seg = (struct ibv_sge *) malloc(sizeof(struct ibv_sge));
+
+    }
+
+    uint32_t remote_rkey;		/* remote guys RKEY */
+    uint64_t remote_addr;		/* remote guys TO */
+    uint32_t remote_len;		/* remote guys LEN */
+
+};
+
+
 struct test_class_rdma_info{
     struct ibv_send_wr test_class_wr;
     struct ibv_sge *test_sgl;
@@ -37,8 +60,6 @@ struct test_class_rdma_info{
     struct ibv_mr *test_class_mr;
     struct ibv_mr *class_buf_mr;
     struct ibv_mr *class_send_mr;
-
-
 
     struct rdma_info class_info;
     struct rdma_info clas_buf_info;
@@ -67,11 +88,13 @@ public:
     void setup_buffer();
     void recv_handler(struct ibv_wc &wc);
     RdmaTest read_class();
+    void ow_read();
 
     bool GET_RDMA_ADDR = false;
     bool RDMA_READ_COMPLETE = false;
     bool RDMA_WRITE_COMPLETE = false;
     bool GET_CLASS_ADDR = false;
+    bool GET_SKETCH_ADDR = false;
 
 private:
     const char *ip;
@@ -113,6 +136,7 @@ private:
     uint32_t remote_len;		/* remote guys LEN */
 
     struct test_class_rdma_info class_info;
+    struct sketch_rdma_info sketch_info;
 
 
 };
@@ -128,6 +152,8 @@ enum ServerState{
     SERVER_WRITE_COMPLETE1,
     SERVER_READ_COMPLETE1,
     SERVER_RDMA_ADDR_SEND_COMPLETE,
+    CLASS_ADDR_SEND_COMPLETE,
+    SKETCH_ADDR_SEND_COMPLETE,
 };
 
 
@@ -151,6 +177,7 @@ public:
     void setup_buffer();
     void server_recv_handler(struct ibv_wc&);
     void init_class_recv();
+    void init_sketch_rdma();
 
 
 private:
@@ -196,6 +223,11 @@ private:
 
 
     struct test_class_rdma_info class_info;
+    struct sketch_rdma_info sketch_info;
+
+    bool rdma_addr_send_complete = false;
+    bool class_addr_send_complete = false;
+    bool sketch_addr_send_complete = false;
 
 
 };
